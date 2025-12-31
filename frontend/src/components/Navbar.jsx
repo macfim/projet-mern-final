@@ -19,6 +19,9 @@ function Navbar() {
         <Link to="/posts" style={{ color: 'white', textDecoration: 'none' }}>
           Posts
         </Link>
+        <Link to="/analytics" style={{ color: 'white', textDecoration: 'none' }}>
+          Analytics
+        </Link>
         {isAuthenticated && (
           <>
             <Link to="/new-post" style={{ color: 'white', textDecoration: 'none' }}>

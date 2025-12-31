@@ -11,6 +11,7 @@ import { NewPostPage } from './pages/NewPostPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { UsersPage } from './pages/UsersPage';
 import { TagsPage } from './pages/TagsPage';
+import PowerBIPage from './pages/PowerBIPage';
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
               </AdminRoute>
             }
           />
+          <Route path="/analytics" element={<PowerBIPage />} />
         </Routes>
       </main>
     </div>

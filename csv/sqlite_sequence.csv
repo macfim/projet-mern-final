@@ -1,0 +1,5 @@
+name,seq
+DimUser,54
+DimDate,401
+DimPost,405
+FactPost,405
