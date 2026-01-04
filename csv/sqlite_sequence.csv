@@ -1,5 +1,5 @@
 name,seq
-DimUser,54
-DimDate,401
-DimPost,405
-FactPost,405
+DimUser,854
+DimDate,8401
+DimPost,8405
+FactPost,8405
