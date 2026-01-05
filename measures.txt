@@ -1,0 +1,5 @@
+Avg Comments/Post = DIVIDE([Total Comments], [Total Posts])
+Avg Content Length = AVERAGE(FactPost[content_length])
+Avg Tags/Post = AVERAGE(FactPost[tags_count])
+Total Comments = SUM(FactPost[comments_count])
+Total Posts = SUM(FactPost[post_count])
