@@ -1,5 +1,5 @@
 """
-Script ETL : Extraction de données MongoDB vers un entrepôt SQLite
+Script ETL(Extract, Transform, Load) : Extraction de données MongoDB vers un entrepôt SQLite
 Extrait les données de MongoDB et les charge dans un entrepôt SQLite suivant un schéma en étoile.
 """
 
@@ -35,8 +35,10 @@ def get_date_id(cursor, date_value):
     
     # TRANSFORMATION: Normalisation - extraction year, month, day
     year, month, day = map(int, date_string.split("-"))
-    cursor.execute("INSERT OR IGNORE INTO DimDate(date, year, month, day) VALUES (?, ?, ?, ?)", 
-                   (date_string, year, month, day))
+    cursor.execute(
+        "INSERT INTO DimDate(date, year, month, day) VALUES (?, ?, ?, ?)", 
+        (date_string, year, month, day)
+    )
     cursor.execute("SELECT date_id FROM DimDate WHERE date = ?", (date_string,))
     result = cursor.fetchone()
     return result[0]
@@ -49,10 +51,10 @@ def get_user_key(cursor, user_doc):
     email = user_doc.get("email")
     role = user_doc.get("role")
     
-    cursor.execute("INSERT OR IGNORE INTO DimUser(mongo_user_id, username, email, role) VALUES (?, ?, ?, ?)", 
-                   (mongo_id, username, email, role))
-    cursor.execute("UPDATE DimUser SET username=?, email=?, role=? WHERE mongo_user_id=?", 
-                   (username, email, role, mongo_id))
+    cursor.execute(
+      "INSERT INTO DimUser(mongo_user_id, username, email, role) VALUES (?, ?, ?, ?)", 
+      (mongo_id, username, email, role)
+    )
     cursor.execute("SELECT user_key FROM DimUser WHERE mongo_user_id = ?", (mongo_id,))
     result = cursor.fetchone()
     return result[0]
@@ -63,9 +65,10 @@ def get_post_key(cursor, post_doc):
     mongo_id = str(post_doc["_id"])
     title = post_doc.get("title")
     
-    cursor.execute("INSERT OR IGNORE INTO DimPost(mongo_post_id, title) VALUES (?, ?)", 
-                   (mongo_id, title))
-    cursor.execute("UPDATE DimPost SET title=? WHERE mongo_post_id=?", (title, mongo_id))
+    cursor.execute(
+        "INSERT INTO DimPost(mongo_post_id, title) VALUES (?, ?)", 
+        (mongo_id, title)
+    )
     cursor.execute("SELECT post_key FROM DimPost WHERE mongo_post_id = ?", (mongo_id,))
     result = cursor.fetchone()
     return result[0]
