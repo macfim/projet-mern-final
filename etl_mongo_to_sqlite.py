@@ -120,7 +120,7 @@ def main():
             author_id = None
         
         if not author_id or author_id not in user_key_map:
-            continue  # Filtrage: skip posts orphelins
+            continue  # Filtrage: skip posts sans auteur valide
         
         # TRANSFORMATION: Gestion valeurs manquantes - fallback updatedAt si createdAt absent
         post_date = post.get("createdAt")
