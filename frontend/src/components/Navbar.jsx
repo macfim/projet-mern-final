@@ -12,6 +12,9 @@ function Navbar() {
         <Link to="/" className="text-white font-medium no-underline">
           Home
         </Link>
+        <Link to="/search" className="text-white font-medium no-underline">
+          Search
+        </Link>
         <Link to="/posts" className="text-white font-medium no-underline">
           Posts
         </Link>

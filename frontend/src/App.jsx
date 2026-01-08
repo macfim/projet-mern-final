@@ -13,6 +13,7 @@ import { NewPostPage } from "./pages/NewPostPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { UsersPage } from "./pages/UsersPage";
 import { TagsPage } from "./pages/TagsPage";
+import { SearchPage } from "./pages/SearchPage";
 import PowerBIPage from "./pages/PowerBIPage";
 
 function App() {
@@ -69,6 +70,7 @@ function App() {
             }
           />
           <Route path="/analytics" element={<PowerBIPage />} />
+          <Route path="/search" element={<SearchPage />} />
         </Routes>
       </main>
     </div>

@@ -8,6 +8,7 @@ const profileRoutes = require("./routes/profileRoutes");
 const postRoutes = require("./routes/postRoutes");
 const commentRoutes = require("./routes/commentRoutes");
 const tagRoutes = require("./routes/tagRoutes");
+const searchRoutes = require("./routes/searchRoutes");
 
 dotenv.config();
 
@@ -32,6 +33,7 @@ app.use("/api/profiles", profileRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/posts/:postId/comments", commentRoutes);
 app.use("/api/tags", tagRoutes);
+app.use("/api/search", searchRoutes);
 
 // Start server once DB is connected
 // If MONGO_URI is not provided, fall back to the local Docker MongoDB instance
