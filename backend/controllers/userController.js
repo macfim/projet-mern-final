@@ -3,7 +3,7 @@ const { User } = require("../models/User");
 
 async function getUsers(req, res) {
   try {
-    const users = await User.find().select("-password");
+    const users = await User.find().select("-password").sort({ createdAt: -1 });
     res.json(users);
   } catch (err) {
     console.error(err);
@@ -30,7 +30,8 @@ async function updateUser(req, res) {
       username: Joi.string().min(3).max(30).required(),
     });
     const { error, value } = schema.validate(req.body);
-    if (error) return res.status(400).json({ message: error.details[0].message });
+    if (error)
+      return res.status(400).json({ message: error.details[0].message });
 
     const { username } = value;
     const user = await User.findByIdAndUpdate(

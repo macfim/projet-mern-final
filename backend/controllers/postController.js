@@ -14,7 +14,8 @@ async function getPosts(req, res) {
     }
     const posts = await Post.find(filter)
       .populate("author", "username")
-      .populate("tags", "name");
+      .populate("tags", "name")
+      .sort({ createdAt: -1 });
     res.json(posts);
   } catch (err) {
     console.error(err);
@@ -26,7 +27,8 @@ async function getMyPosts(req, res) {
   try {
     const posts = await Post.find({ author: req.userId })
       .populate("author", "username")
-      .populate("tags", "name");
+      .populate("tags", "name")
+      .sort({ createdAt: -1 });
     res.json(posts);
   } catch (err) {
     console.error(err);

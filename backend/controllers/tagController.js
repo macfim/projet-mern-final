@@ -4,7 +4,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 async function getTags(req, res) {
   try {
-    const tags = await Tag.find().sort({ name: 1 });
+    const tags = await Tag.find().sort({ createdAt: -1 });
     res.json(tags);
   } catch (err) {
     console.error(err);
