@@ -19,12 +19,14 @@ export function PostsListPage() {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeView, setActiveView] = useState("all");
 
   async function loadAll() {
     try {
       setError("");
       setLoading(true);
       setCurrentPage(1);
+      setActiveView("all"); // Set active view
       const data = await api.get("/posts");
       setPosts(data);
       setFilteredPosts(data);
@@ -41,6 +43,7 @@ export function PostsListPage() {
       setError("");
       setLoading(true);
       setCurrentPage(1);
+      setActiveView("mine"); // Set active view
       const data = await api.get("/posts/me");
       setPosts(data);
       setFilteredPosts(data);
@@ -81,11 +84,19 @@ export function PostsListPage() {
 
   const filterActions = (
     <div className="flex gap-8">
-      <Button variant="secondary" onClick={loadAll} disabled={loading}>
+      <Button
+        variant={activeView === "all" ? "primary" : "secondary"}
+        onClick={loadAll}
+        disabled={loading}
+      >
         All posts
       </Button>
       {isAuthenticated && (
-        <Button variant="secondary" onClick={loadMine} disabled={loading}>
+        <Button
+          variant={activeView === "mine" ? "primary" : "secondary"}
+          onClick={loadMine}
+          disabled={loading}
+        >
           My posts
         </Button>
       )}
