@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../api.js";
 import Button from "../components/ui/Button.jsx";
 import Input from "../components/ui/Input.jsx";
 import ErrorMessage from "../components/ui/ErrorMessage.jsx";
 import Container from "../components/ui/Container.jsx";
 import Card from "../components/ui/Card.jsx";
+import Pagination from "../components/ui/Pagination.jsx";
+
+const PAGE_SIZE = 10;
 
 export function UsersPage() {
   const [users, setUsers] = useState([]);
@@ -14,6 +17,7 @@ export function UsersPage() {
   const [editingUserId, setEditingUserId] = useState(null);
   const [loadingSave, setLoadingSave] = useState(null);
   const [loadingDelete, setLoadingDelete] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   async function loadUsers() {
     try {
@@ -28,6 +32,13 @@ export function UsersPage() {
   useEffect(() => {
     loadUsers();
   }, []);
+
+  useEffect(() => {
+    const totalPages = Math.ceil(users.length / PAGE_SIZE);
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(totalPages);
+    }
+  }, [users.length, currentPage]);
 
   async function viewUser(id) {
     try {
@@ -77,6 +88,14 @@ export function UsersPage() {
     }
   }
 
+  function handlePageChange(newPage) {
+    setCurrentPage(newPage);
+  }
+
+  const startIndex = (currentPage - 1) * PAGE_SIZE;
+  const endIndex = startIndex + PAGE_SIZE;
+  const paginatedUsers = users.slice(startIndex, endIndex);
+
   return (
     <Container maxWidth="800px" padding="20px">
       <h2 className="text-2xl font-bold text-slate-900 mb-4">Users</h2>
@@ -88,7 +107,7 @@ export function UsersPage() {
         />
       )}
       <ul className="list-none p-0 m-0">
-        {users.map((u) => {
+        {paginatedUsers.map((u) => {
           const isEditingThisUser = editingUserId === u._id;
           return (
             <li
@@ -162,6 +181,15 @@ export function UsersPage() {
           <li className="py-3 text-xs text-slate-500">No users found.</li>
         )}
       </ul>
+
+      {users.length > PAGE_SIZE && (
+        <Pagination
+          totalItems={users.length}
+          currentPage={currentPage}
+          pageSize={PAGE_SIZE}
+          onPageChange={handlePageChange}
+        />
+      )}
 
       {selectedUser && (
         <Card className="mt-5">

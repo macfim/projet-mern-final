@@ -6,6 +6,9 @@ import Input from "../components/ui/Input";
 import Textarea from "../components/ui/Textarea";
 import Card from "../components/ui/Card";
 import ErrorMessage from "../components/ui/ErrorMessage";
+import Pagination from "../components/ui/Pagination";
+
+const COMMENTS_PAGE_SIZE = 10;
 
 export function PostDetailPage() {
   const { id } = useParams();
@@ -28,6 +31,7 @@ export function PostDetailPage() {
   const [loadingDeletePost, setLoadingDeletePost] = useState(false);
   const [loadingUpdateComment, setLoadingUpdateComment] = useState(null);
   const [loadingDeleteComment, setLoadingDeleteComment] = useState(null);
+  const [commentsPage, setCommentsPage] = useState(1);
 
   async function loadPost() {
     try {
@@ -66,6 +70,13 @@ export function PostDetailPage() {
     loadComments();
     loadTags();
   }, [id]);
+
+  useEffect(() => {
+    const totalPages = Math.ceil(comments.length / COMMENTS_PAGE_SIZE);
+    if (commentsPage > totalPages && totalPages > 0) {
+      setCommentsPage(totalPages);
+    }
+  }, [comments.length, commentsPage]);
 
   function toggleTag(tagId) {
     setSelectedTagIds((prev) =>
@@ -128,6 +139,7 @@ export function PostDetailPage() {
       setLoadingAddComment(true);
       await api.post(`/posts/${id}/comments`, { content: newComment });
       setNewComment("");
+      setCommentsPage(1);
       loadComments();
     } catch (err) {
       setError(err.message);
@@ -184,6 +196,14 @@ export function PostDetailPage() {
 
   const isAuthor =
     currentUser && post.author && currentUser.id === post.author._id;
+
+  function handleCommentsPageChange(newPage) {
+    setCommentsPage(newPage);
+  }
+
+  const startIndex = (commentsPage - 1) * COMMENTS_PAGE_SIZE;
+  const endIndex = startIndex + COMMENTS_PAGE_SIZE;
+  const paginatedComments = comments.slice(startIndex, endIndex);
 
   return (
     <div className="p-5 max-w-3xl mx-auto">
@@ -310,7 +330,7 @@ export function PostDetailPage() {
           </p>
         )}
         <ul className="list-none p-0 m-0 flex flex-col gap-3">
-          {comments.map((c) => {
+          {paginatedComments.map((c) => {
             const canEdit =
               currentUser && c.author && currentUser.id === c.author._id;
             const isEditingThisComment = editingCommentId === c._id;
@@ -395,6 +415,15 @@ export function PostDetailPage() {
             <li className="text-xs text-slate-500">No comments yet.</li>
           )}
         </ul>
+
+        {comments.length > COMMENTS_PAGE_SIZE && (
+          <Pagination
+            totalItems={comments.length}
+            currentPage={commentsPage}
+            pageSize={COMMENTS_PAGE_SIZE}
+            onPageChange={handleCommentsPageChange}
+          />
+        )}
       </div>
     </div>
   );
