@@ -63,6 +63,20 @@ function Login() {
             />
           </div>
 
+          <div className="mt-3 p-3 bg-slate-50 rounded border border-slate-200">
+            <p className="text-xs font-medium text-slate-600 mb-2">
+              Demo Accounts:
+            </p>
+            <p className="text-xs text-slate-600">
+              <span className="font-medium">Admin:</span> admin@example.com /
+              password123
+            </p>
+            <p className="text-xs text-slate-600">
+              <span className="font-medium">User:</span> john@example.com /
+              password123
+            </p>
+          </div>
+
           <Button type="submit" disabled={loading} className="w-full mt-2">
             {loading ? "Logging in..." : "Login"}
           </Button>
