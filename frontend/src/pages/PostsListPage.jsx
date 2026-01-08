@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../api.js";
+import { useAuth } from "../context/AuthContext";
 import Container from "../components/ui/Container";
 import PageHeader from "../components/ui/PageHeader";
 import Button from "../components/ui/Button";
@@ -11,6 +12,7 @@ import Pagination from "../components/ui/Pagination";
 const PAGE_SIZE = 10;
 
 export function PostsListPage() {
+  const { isAuthenticated } = useAuth();
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [error, setError] = useState("");
@@ -82,9 +84,11 @@ export function PostsListPage() {
       <Button variant="secondary" onClick={loadAll} disabled={loading}>
         All posts
       </Button>
-      <Button variant="secondary" onClick={loadMine} disabled={loading}>
-        My posts
-      </Button>
+      {isAuthenticated && (
+        <Button variant="secondary" onClick={loadMine} disabled={loading}>
+          My posts
+        </Button>
+      )}
     </div>
   );
 
