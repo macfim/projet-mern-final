@@ -5,6 +5,7 @@ const {
   createTag,
   updateTag,
   deleteTag,
+  generateTag,
 } = require("../controllers/tagController");
 const { protect, isAdmin } = require("../middleware/authMiddleware");
 
@@ -15,6 +16,7 @@ router.get("/:id", getTagById); // Public route
 
 // Tag management requires admin access
 router.post("/", protect, isAdmin, createTag);
+router.post("/generate", protect, isAdmin, generateTag);
 router.put("/:id", protect, isAdmin, updateTag);
 router.delete("/:id", protect, isAdmin, deleteTag);
 

@@ -71,6 +71,21 @@ export function TagsPage() {
     }
   }
 
+  async function handleGenerateAI() {
+    setError("");
+    setLoadingSubmit(true);
+    try {
+      const generated = await api.post("/tags/generate");
+      setName(generated.name);
+      setSlug(generated.slug);
+      setSelectedTag(null);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoadingSubmit(false);
+    }
+  }
+
   async function updateTag(e) {
     e.preventDefault();
     if (!selectedTag) return;
@@ -221,19 +236,30 @@ export function TagsPage() {
                 className="text-xs"
               />
             </div>
-            <Button
-              type="submit"
-              disabled={loadingSubmit}
-              className="self-start px-4 py-1.5 text-xs"
-            >
-              {loadingSubmit
-                ? selectedTag
-                  ? "Updating..."
-                  : "Creating..."
-                : selectedTag
-                ? "Update tag"
-                : "Create tag"}
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                onClick={handleGenerateAI}
+                disabled={loadingSubmit}
+                variant="secondary"
+                className="px-3 py-1.5 text-xs"
+              >
+                {loadingSubmit ? "Generating..." : "✨ AI"}
+              </Button>
+              <Button
+                type="submit"
+                disabled={loadingSubmit}
+                className="px-4 py-1.5 text-xs"
+              >
+                {loadingSubmit
+                  ? selectedTag
+                    ? "Updating..."
+                    : "Creating..."
+                  : selectedTag
+                  ? "Update tag"
+                  : "Create tag"}
+              </Button>
+            </div>
           </form>
 
           {selectedTag && (
