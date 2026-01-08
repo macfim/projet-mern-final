@@ -5,7 +5,7 @@ async function getMyProfile(req, res) {
   try {
     const profile = await Profile.findOne({ user: req.userId }).populate(
       "user",
-      "username email"
+      "username email role"
     );
     if (!profile) {
       return res.status(404).json({ message: "Profile not found" });
@@ -24,7 +24,8 @@ async function updateMyProfile(req, res) {
       avatarUrl: Joi.string().uri().allow(""),
     });
     const { error, value } = schema.validate(req.body);
-    if (error) return res.status(400).json({ message: error.details[0].message });
+    if (error)
+      return res.status(400).json({ message: error.details[0].message });
 
     const { bio, avatarUrl } = value;
     const update = {};
@@ -35,7 +36,7 @@ async function updateMyProfile(req, res) {
       { user: req.userId },
       update,
       { new: true }
-    ).populate("user", "username email");
+    ).populate("user", "username email role");
     if (!profile) {
       return res.status(404).json({ message: "Profile not found" });
     }
