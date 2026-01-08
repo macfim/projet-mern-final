@@ -261,17 +261,6 @@ export function TagsPage() {
               </Button>
             </div>
           </form>
-
-          {selectedTag && (
-            <div className="mt-4 rounded border border-slate-200 bg-white p-3">
-              <h4 className="mb-1 text-xs font-bold text-slate-900">
-                Selected tag raw data
-              </h4>
-              <pre className="m-0 whitespace-pre-wrap font-mono text-xs text-slate-700">
-                {JSON.stringify(selectedTag, null, 2)}
-              </pre>
-            </div>
-          )}
         </Card>
       </div>
     </div>
