@@ -112,6 +112,18 @@ export function ProfilePage() {
       {!isEditing ? (
         <div>
           <Card className="mb-4">
+            {profile.avatarUrl && (
+              <div className="mb-4 flex justify-center">
+                <img
+                  src={profile.avatarUrl}
+                  alt="Profile Avatar"
+                  className="w-24 h-24 rounded-full object-cover border-2 border-slate-200"
+                  onError={(e) => {
+                    e.target.style.display = "none";
+                  }}
+                />
+              </div>
+            )}
             <div className="mb-4">
               <p className="text-xs font-medium text-slate-600 mb-1">Bio</p>
               <p className="text-sm text-slate-800 leading-relaxed whitespace-pre-wrap">
@@ -139,21 +151,34 @@ export function ProfilePage() {
         <form onSubmit={handleSave} className="flex flex-col gap-4">
           <div>
             <label className="block text-xs font-medium text-slate-600 mb-1">
+              Avatar URL
+            </label>
+            <Input
+              value={avatarUrl}
+              onChange={(e) => setAvatarUrl(e.target.value)}
+              placeholder="https://example.com/avatar.jpg"
+            />
+            {avatarUrl && (
+              <div className="mt-2 flex justify-center">
+                <img
+                  src={avatarUrl}
+                  alt="Avatar Preview"
+                  className="w-16 h-16 rounded-full object-cover border-2 border-slate-200"
+                  onError={(e) => {
+                    e.target.style.display = "none";
+                  }}
+                />
+              </div>
+            )}
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-slate-600 mb-1">
               Bio
             </label>
             <Textarea
               value={bio}
               onChange={(e) => setBio(e.target.value)}
               rows={4}
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-slate-600 mb-1">
-              Avatar URL
-            </label>
-            <Input
-              value={avatarUrl}
-              onChange={(e) => setAvatarUrl(e.target.value)}
             />
           </div>
           <div className="flex gap-2">
