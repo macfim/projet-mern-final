@@ -77,14 +77,27 @@ export function PostsListPage() {
               const paginatedPosts = posts.slice(startIndex, endIndex);
               return paginatedPosts.map((p) => (
                 <li key={p._id} className="py-4 border-b border-slate-300">
-                  <Link to={`/posts/${p._id}`} variant="primary">
-                    {p.title}
-                  </Link>
-                  {p.author && (
-                    <span className="text-sm text-slate-600 ml-3">
-                      by {p.author.username}
-                    </span>
-                  )}
+                  <div className="flex items-baseline justify-between gap-4">
+                    <div>
+                      <Link to={`/posts/${p._id}`} variant="primary">
+                        {p.title}
+                      </Link>
+                      {p.author && (
+                        <span className="text-sm text-slate-600 ml-3">
+                          by {p.author.username}
+                        </span>
+                      )}
+                    </div>
+                    {p.createdAt && (
+                      <span className="text-sm text-slate-500 whitespace-nowrap">
+                        {new Date(p.createdAt).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </span>
+                    )}
+                  </div>
                 </li>
               ));
             })()}
