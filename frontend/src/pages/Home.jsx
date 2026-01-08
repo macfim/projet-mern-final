@@ -1,97 +1,72 @@
-import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from "../context/AuthContext";
+import Container from "../components/ui/Container";
+import Button from "../components/ui/Button";
+import Link from "../components/ui/Link";
+import { COLORS, SPACING, TYPOGRAPHY } from "../constants/styles";
 
 function Home() {
   const { isAuthenticated } = useAuth();
 
+  const containerStyles = {
+    textAlign: "center",
+  };
+
+  const titleStyles = {
+    fontSize: TYPOGRAPHY.fontSizeXxxxl,
+    fontWeight: TYPOGRAPHY.fontWeightBold,
+    marginBottom: SPACING.xxl,
+    color: COLORS.primary,
+  };
+
+  const descriptionStyles = {
+    fontSize: TYPOGRAPHY.fontSizeXl,
+    color: COLORS.secondary,
+    marginBottom: SPACING.xxxxxxl,
+    lineHeight: TYPOGRAPHY.lineHeightNormal,
+  };
+
+  const buttonContainerStyles = {
+    display: "flex",
+    gap: SPACING.xxl,
+    justifyContent: "center",
+    flexWrap: "wrap",
+  };
+
+  const linkButtonStyles = {
+    padding: `${SPACING.md} ${SPACING.xxl}`,
+    textDecoration: "none",
+    display: "inline-block",
+    cursor: "pointer",
+  };
+
   return (
-    <div style={{ padding: '40px 20px', textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}>
-      <h1 style={{ 
-        fontSize: '36px', 
-        fontWeight: 'bold',
-        marginBottom: '16px',
-        color: '#0f172a'
-      }}>
-        Welcome
-      </h1>
-      <p style={{ 
-        fontSize: '18px', 
-        color: '#64748b', 
-        marginBottom: '40px',
-        lineHeight: '1.6'
-      }}>
-        Welcome to our content sharing platform
-      </p>
-      <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
-        <Link
-          to="/posts"
-          style={{
-            padding: '12px 24px',
-            backgroundColor: '#0f172a',
-            color: 'white',
-            textDecoration: 'none',
-            borderRadius: '6px',
-            fontSize: '14px',
-            fontWeight: '500'
-          }}
-        >
-          View Posts
-        </Link>
-        {!isAuthenticated && (
-          <>
-            <Link
-              to="/login"
-              style={{
-                padding: '12px 24px',
-                backgroundColor: 'white',
-                color: '#0f172a',
-                textDecoration: 'none',
-                borderRadius: '6px',
-                border: '1px solid #cbd5e1',
-                fontSize: '14px',
-                fontWeight: '500'
-              }}
-            >
-              Login
-            </Link>
-            <Link
-              to="/register"
-              style={{
-                padding: '12px 24px',
-                backgroundColor: 'white',
-                color: '#0f172a',
-                textDecoration: 'none',
-                borderRadius: '6px',
-                border: '1px solid #cbd5e1',
-                fontSize: '14px',
-                fontWeight: '500'
-              }}
-            >
-              Register
-            </Link>
-          </>
-        )}
-        {isAuthenticated && (
-          <Link
-            to="/new-post"
-            style={{
-              padding: '12px 24px',
-              backgroundColor: 'white',
-              color: '#0f172a',
-              textDecoration: 'none',
-              borderRadius: '6px',
-              border: '1px solid #cbd5e1',
-              fontSize: '14px',
-              fontWeight: '500'
-            }}
-          >
-            Create a Post
+    <Container>
+      <div style={containerStyles}>
+        <h1 style={titleStyles}>Welcome</h1>
+        <p style={descriptionStyles}>Welcome to our content sharing platform</p>
+        <div style={buttonContainerStyles}>
+          <Link to="/posts" style={linkButtonStyles}>
+            <Button>View Posts</Button>
           </Link>
-        )}
+          {!isAuthenticated && (
+            <>
+              <Link to="/login" style={linkButtonStyles}>
+                <Button variant="secondary">Login</Button>
+              </Link>
+              <Link to="/register" style={linkButtonStyles}>
+                <Button variant="secondary">Register</Button>
+              </Link>
+            </>
+          )}
+          {isAuthenticated && (
+            <Link to="/new-post" style={linkButtonStyles}>
+              <Button variant="secondary">Create a Post</Button>
+            </Link>
+          )}
+        </div>
       </div>
-    </div>
+    </Container>
   );
 }
 
 export default Home;
-

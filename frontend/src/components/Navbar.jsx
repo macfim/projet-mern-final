@@ -1,38 +1,49 @@
-import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { COLORS, SPACING, TYPOGRAPHY } from "../constants/styles";
+import Badge from "./ui/Badge";
+import Button from "./ui/Button";
 
 function Navbar() {
   const { user, logout, isAuthenticated, isAdmin } = useAuth();
 
+  const navLinkStyle = {
+    color: COLORS.background,
+    textDecoration: "none",
+    fontWeight: TYPOGRAPHY.fontWeightMedium,
+  };
+
   return (
-    <nav style={{
-      backgroundColor: '#2c3e50',
-      padding: '15px 30px',
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center'
-    }}>
-      <div style={{ display: 'flex', gap: '20px' }}>
-        <Link to="/" style={{ color: 'white', textDecoration: 'none' }}>
+    <nav
+      style={{
+        backgroundColor: COLORS.primary,
+        padding: `${SPACING.xxxl} ${SPACING.xxxxxl}`,
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}
+    >
+      <div style={{ display: "flex", gap: SPACING.xxxl }}>
+        <Link to="/" style={navLinkStyle}>
           Home
         </Link>
-        <Link to="/posts" style={{ color: 'white', textDecoration: 'none' }}>
+        <Link to="/posts" style={navLinkStyle}>
           Posts
         </Link>
-        <Link to="/analytics" style={{ color: 'white', textDecoration: 'none' }}>
+        <Link to="/analytics" style={navLinkStyle}>
           Analytics
         </Link>
         {isAuthenticated && (
           <>
-            <Link to="/new-post" style={{ color: 'white', textDecoration: 'none' }}>
+            <Link to="/new-post" style={navLinkStyle}>
               New Post
             </Link>
             {isAdmin && (
               <>
-                <Link to="/tags" style={{ color: 'white', textDecoration: 'none' }}>
+                <Link to="/tags" style={navLinkStyle}>
                   Tags
                 </Link>
-                <Link to="/users" style={{ color: 'white', textDecoration: 'none' }}>
+                <Link to="/users" style={navLinkStyle}>
                   Users
                 </Link>
               </>
@@ -41,53 +52,31 @@ function Navbar() {
         )}
       </div>
 
-      <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+      <div style={{ display: "flex", gap: SPACING.xxxl, alignItems: "center" }}>
         {isAuthenticated ? (
           <>
-            <Link to="/profile" style={{ 
-              color: 'white', 
-              textDecoration: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}>
-              <span>Profile ({user?.username})</span>
-              {isAdmin && (
-                <span style={{
-                  display: 'inline-block',
-                  padding: '2px 8px',
-                  backgroundColor: '#3b82f6',
-                  color: 'white',
-                  fontSize: '11px',
-                  fontWeight: '600',
-                  borderRadius: '12px',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.5px'
-                }}>
-                  Admin
-                </span>
-              )}
-            </Link>
-            <button
-              onClick={logout}
+            <Link
+              to="/profile"
               style={{
-                padding: '8px 16px',
-                backgroundColor: '#e74c3c',
-                color: 'white',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: 'pointer'
+                ...navLinkStyle,
+                display: "flex",
+                alignItems: "center",
+                gap: SPACING.md,
               }}
             >
+              <span>Profile ({user?.username})</span>
+              {isAdmin && <Badge variant="info">Admin</Badge>}
+            </Link>
+            <Button variant="danger" onClick={logout}>
               Logout
-            </button>
+            </Button>
           </>
         ) : (
           <>
-            <Link to="/login" style={{ color: 'white', textDecoration: 'none' }}>
+            <Link to="/login" style={navLinkStyle}>
               Login
             </Link>
-            <Link to="/register" style={{ color: 'white', textDecoration: 'none' }}>
+            <Link to="/register" style={navLinkStyle}>
               Register
             </Link>
           </>
@@ -98,4 +87,3 @@ function Navbar() {
 }
 
 export default Navbar;
-
