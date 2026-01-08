@@ -6,6 +6,7 @@ import ErrorMessage from "../components/ui/ErrorMessage.jsx";
 import Container from "../components/ui/Container.jsx";
 import Card from "../components/ui/Card.jsx";
 import Pagination from "../components/ui/Pagination.jsx";
+import Loading from "../components/ui/Loading.jsx";
 
 const PAGE_SIZE = 10;
 
@@ -17,15 +18,19 @@ export function UsersPage() {
   const [editingUserId, setEditingUserId] = useState(null);
   const [loadingSave, setLoadingSave] = useState(null);
   const [loadingDelete, setLoadingDelete] = useState(null);
+  const [loadingUsers, setLoadingUsers] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
 
   async function loadUsers() {
     try {
       setError("");
+      setLoadingUsers(true);
       const data = await api.get("/users");
       setUsers(data);
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoadingUsers(false);
     }
   }
 
@@ -106,83 +111,89 @@ export function UsersPage() {
           className="mb-4"
         />
       )}
-      <ul className="list-none p-0 m-0">
-        {paginatedUsers.map((u) => {
-          const isEditingThisUser = editingUserId === u._id;
-          return (
-            <li
-              key={u._id}
-              className="py-3 border-b border-slate-100 flex flex-col gap-2"
-            >
-              <div>
-                <p className="font-medium text-slate-900 mb-1">{u.username}</p>
-                <p className="text-xs text-slate-500">{u.email}</p>
-              </div>
-              {!isEditingThisUser ? (
-                <div className="flex flex-wrap items-center gap-2">
-                  <Button
-                    variant="secondary"
-                    onClick={() => viewUser(u._id)}
-                    className="px-3 py-1 text-xs"
-                  >
-                    View
-                  </Button>
-                  <Button
-                    variant="primary"
-                    onClick={() => handleEditUserClick(u._id, u.username)}
-                    className="px-3 py-1 text-xs"
-                  >
-                    Edit Username
-                  </Button>
-                  <Button
-                    variant="danger"
-                    onClick={() => deleteUser(u._id)}
-                    disabled={loadingDelete === u._id}
-                    className="px-3 py-1 text-xs"
-                  >
-                    {loadingDelete === u._id ? "Deleting..." : "Delete"}
-                  </Button>
+      {loadingUsers ? (
+        <Loading message="Loading users..." />
+      ) : (
+        <ul className="list-none p-0 m-0">
+          {paginatedUsers.map((u) => {
+            const isEditingThisUser = editingUserId === u._id;
+            return (
+              <li
+                key={u._id}
+                className="py-3 border-b border-slate-100 flex flex-col gap-2"
+              >
+                <div>
+                  <p className="font-medium text-slate-900 mb-1">
+                    {u.username}
+                  </p>
+                  <p className="text-xs text-slate-500">{u.email}</p>
                 </div>
-              ) : (
-                <div className="flex flex-wrap items-center gap-2">
-                  <Input
-                    placeholder="New username"
-                    value={editNames[u._id] || ""}
-                    onChange={(e) =>
-                      setEditNames((prev) => ({
-                        ...prev,
-                        [u._id]: e.target.value,
-                      }))
-                    }
-                    className="flex-1 min-w-[150px] text-xs"
-                  />
-                  <Button
-                    variant="primary"
-                    onClick={() => saveName(u._id)}
-                    disabled={loadingSave === u._id}
-                    className="px-3 py-1 text-xs"
-                  >
-                    {loadingSave === u._id ? "Saving..." : "Save"}
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    onClick={handleCancelEditUser}
-                    disabled={loadingSave === u._id}
-                    className="px-3 py-1 text-xs"
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              )}
-            </li>
-          );
-        })}
-        {users.length === 0 && (
-          <li className="py-3 text-xs text-slate-500">No users found.</li>
-        )}
-      </ul>
+                {!isEditingThisUser ? (
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Button
+                      variant="secondary"
+                      onClick={() => viewUser(u._id)}
+                      className="px-3 py-1 text-xs"
+                    >
+                      View
+                    </Button>
+                    <Button
+                      variant="primary"
+                      onClick={() => handleEditUserClick(u._id, u.username)}
+                      className="px-3 py-1 text-xs"
+                    >
+                      Edit Username
+                    </Button>
+                    <Button
+                      variant="danger"
+                      onClick={() => deleteUser(u._id)}
+                      disabled={loadingDelete === u._id}
+                      className="px-3 py-1 text-xs"
+                    >
+                      {loadingDelete === u._id ? "Deleting..." : "Delete"}
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Input
+                      placeholder="New username"
+                      value={editNames[u._id] || ""}
+                      onChange={(e) =>
+                        setEditNames((prev) => ({
+                          ...prev,
+                          [u._id]: e.target.value,
+                        }))
+                      }
+                      className="flex-1 min-w-[150px] text-xs"
+                    />
+                    <Button
+                      variant="primary"
+                      onClick={() => saveName(u._id)}
+                      disabled={loadingSave === u._id}
+                      className="px-3 py-1 text-xs"
+                    >
+                      {loadingSave === u._id ? "Saving..." : "Save"}
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={handleCancelEditUser}
+                      disabled={loadingSave === u._id}
+                      className="px-3 py-1 text-xs"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                )}
+              </li>
+            );
+          })}
+          {users.length === 0 && (
+            <li className="py-3 text-xs text-slate-500">No users found.</li>
+          )}
+        </ul>
+      )}
 
-      {users.length > PAGE_SIZE && (
+      {!loadingUsers && users.length > PAGE_SIZE && (
         <Pagination
           totalItems={users.length}
           currentPage={currentPage}

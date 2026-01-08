@@ -5,6 +5,7 @@ import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
 import ErrorMessage from "../components/ui/ErrorMessage";
+import Loading from "../components/ui/Loading";
 
 export function TagsPage() {
   const [tags, setTags] = useState([]);
@@ -14,16 +15,20 @@ export function TagsPage() {
   const [error, setError] = useState("");
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(null);
+  const [loadingTags, setLoadingTags] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const PAGE_SIZE = 20;
 
   async function loadTags() {
     try {
       setError("");
+      setLoadingTags(true);
       const data = await api.get("/tags");
       setTags(data);
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoadingTags(false);
     }
   }
 
@@ -123,60 +128,66 @@ export function TagsPage() {
             className="mb-4"
           />
         )}
-        <ul className="list-none p-0 m-0 flex flex-wrap gap-2.5">
-          {paginatedTags.map((t) => (
-            <li key={t._id}>
-              <button
-                type="button"
-                onClick={() => viewTag(t._id)}
-                className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium transition-all ${
-                  selectedTag && selectedTag._id === t._id
-                    ? "border border-slate-900 bg-slate-900 text-white"
-                    : "border border-slate-200 bg-slate-100 text-slate-800"
-                }`}
-              >
-                <span>{t.name}</span>
-                <span
-                  className={`text-xs uppercase tracking-wider ${
+        {loadingTags ? (
+          <Loading message="Loading tags..." />
+        ) : (
+          <ul className="list-none p-0 m-0 flex flex-wrap gap-2.5">
+            {paginatedTags.map((t) => (
+              <li key={t._id}>
+                <button
+                  type="button"
+                  onClick={() => viewTag(t._id)}
+                  className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium transition-all ${
                     selectedTag && selectedTag._id === t._id
-                      ? "text-white/70"
-                      : "text-slate-400"
+                      ? "border border-slate-900 bg-slate-900 text-white"
+                      : "border border-slate-200 bg-slate-100 text-slate-800"
                   }`}
                 >
-                  {t.slug}
-                </span>
-                <span
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (loadingDelete !== t._id) {
-                      deleteTag(t._id);
-                    }
-                  }}
-                  className={`rounded-full bg-black/10 px-1.5 py-0.5 text-xs ${
-                    selectedTag && selectedTag._id === t._id
-                      ? "text-white/90"
-                      : "text-slate-500"
-                  } ${
-                    loadingDelete === t._id
-                      ? "cursor-wait opacity-50"
-                      : "cursor-pointer"
-                  }`}
-                >
-                  {loadingDelete === t._id ? "..." : "✕"}
-                </span>
-              </button>
-            </li>
-          ))}
-          {tags.length === 0 && (
-            <li className="text-xs text-slate-500">No tags yet.</li>
-          )}
-        </ul>
-        <Pagination
-          totalItems={tags.length}
-          currentPage={currentPage}
-          pageSize={PAGE_SIZE}
-          onPageChange={handlePageChange}
-        />
+                  <span>{t.name}</span>
+                  <span
+                    className={`text-xs uppercase tracking-wider ${
+                      selectedTag && selectedTag._id === t._id
+                        ? "text-white/70"
+                        : "text-slate-400"
+                    }`}
+                  >
+                    {t.slug}
+                  </span>
+                  <span
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (loadingDelete !== t._id) {
+                        deleteTag(t._id);
+                      }
+                    }}
+                    className={`rounded-full bg-black/10 px-1.5 py-0.5 text-xs ${
+                      selectedTag && selectedTag._id === t._id
+                        ? "text-white/90"
+                        : "text-slate-500"
+                    } ${
+                      loadingDelete === t._id
+                        ? "cursor-wait opacity-50"
+                        : "cursor-pointer"
+                    }`}
+                  >
+                    {loadingDelete === t._id ? "..." : "✕"}
+                  </span>
+                </button>
+              </li>
+            ))}
+            {tags.length === 0 && (
+              <li className="text-xs text-slate-500">No tags yet.</li>
+            )}
+          </ul>
+        )}
+        {!loadingTags && (
+          <Pagination
+            totalItems={tags.length}
+            currentPage={currentPage}
+            pageSize={PAGE_SIZE}
+            onPageChange={handlePageChange}
+          />
+        )}
       </div>
 
       <div className="col-span-1">

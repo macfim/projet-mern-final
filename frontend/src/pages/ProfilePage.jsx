@@ -6,6 +6,7 @@ import Input from "../components/ui/Input";
 import Textarea from "../components/ui/Textarea";
 import Card from "../components/ui/Card";
 import ErrorMessage from "../components/ui/ErrorMessage";
+import Loading from "../components/ui/Loading";
 
 export function ProfilePage() {
   const [profile, setProfile] = useState(null);
@@ -14,16 +15,20 @@ export function ProfilePage() {
   const [error, setError] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingProfile, setLoadingProfile] = useState(true);
 
   async function loadProfile() {
     try {
       setError("");
+      setLoadingProfile(true);
       const data = await api.get("/profiles/me");
       setProfile(data);
       setBio(data.bio || "");
       setAvatarUrl(data.avatarUrl || "");
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoadingProfile(false);
     }
   }
 
@@ -56,10 +61,18 @@ export function ProfilePage() {
     }
   }
 
+  if (loadingProfile) {
+    return (
+      <Container>
+        <Loading message="Loading profile..." />
+      </Container>
+    );
+  }
+
   if (!profile) {
     return (
       <Container>
-        <p className="text-sm text-slate-600">Loading profile...</p>
+        <ErrorMessage message="Profile not found" />
       </Container>
     );
   }

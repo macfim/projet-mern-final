@@ -7,6 +7,7 @@ import Textarea from "../components/ui/Textarea";
 import Card from "../components/ui/Card";
 import ErrorMessage from "../components/ui/ErrorMessage";
 import Pagination from "../components/ui/Pagination";
+import Loading from "../components/ui/Loading";
 
 const COMMENTS_PAGE_SIZE = 10;
 
@@ -32,10 +33,12 @@ export function PostDetailPage() {
   const [loadingUpdateComment, setLoadingUpdateComment] = useState(null);
   const [loadingDeleteComment, setLoadingDeleteComment] = useState(null);
   const [commentsPage, setCommentsPage] = useState(1);
+  const [loadingPost, setLoadingPost] = useState(true);
 
   async function loadPost() {
     try {
       setError("");
+      setLoadingPost(true);
       const data = await api.get(`/posts/${id}`);
       setPost(data);
       setEditTitle(data.title);
@@ -44,6 +47,8 @@ export function PostDetailPage() {
       setSelectedTagIds(tagIds);
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoadingPost(false);
     }
   }
 
@@ -190,8 +195,20 @@ export function PostDetailPage() {
     }
   }
 
+  if (loadingPost) {
+    return (
+      <div className="p-5 max-w-3xl mx-auto">
+        <Loading message="Loading post..." />
+      </div>
+    );
+  }
+
   if (!post) {
-    return <div className="p-5 text-sm text-slate-600">Loading post...</div>;
+    return (
+      <div className="p-5 max-w-3xl mx-auto">
+        <ErrorMessage message="Post not found" />
+      </div>
+    );
   }
 
   const isAuthor =
