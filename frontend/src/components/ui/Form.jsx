@@ -1,14 +1,10 @@
-import { SPACING } from "../../constants/styles";
-
-export default function Form({ onSubmit, children, ...props }) {
-  const styles = {
-    display: "flex",
-    flexDirection: "column",
-    gap: SPACING.xxl,
-  };
-
+export default function Form({ onSubmit, children, className = "", ...props }) {
   return (
-    <form onSubmit={onSubmit} style={styles} {...props}>
+    <form
+      onSubmit={onSubmit}
+      className={`flex flex-col gap-6 ${className}`}
+      {...props}
+    >
       {children}
     </form>
   );

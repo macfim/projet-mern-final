@@ -1,43 +1,14 @@
-import { COLORS, SPACING, TYPOGRAPHY, BORDERS } from "../../constants/styles";
-
-export default function ErrorMessage({ message, onDismiss }) {
-  const containerStyles = {
-    backgroundColor: COLORS.errorBg,
-    border: `${BORDERS.width} solid ${COLORS.errorBorder}`,
-    borderRadius: BORDERS.radius,
-    padding: SPACING.lg,
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    gap: SPACING.lg,
-  };
-
-  const messageStyles = {
-    color: COLORS.error,
-    fontSize: TYPOGRAPHY.fontSizeMd,
-    margin: 0,
-    flex: 1,
-  };
-
-  const closeButtonStyles = {
-    backgroundColor: "transparent",
-    border: "none",
-    color: COLORS.error,
-    fontSize: TYPOGRAPHY.fontSizeXl,
-    cursor: "pointer",
-    padding: 0,
-    width: "24px",
-    height: "24px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  };
-
+export default function ErrorMessage({ message, onDismiss, className = "" }) {
   return (
-    <div style={containerStyles}>
-      <p style={messageStyles}>{message}</p>
+    <div
+      className={`bg-red-50 border border-red-300 rounded p-4 flex justify-between items-center gap-4 ${className}`}
+    >
+      <p className="text-red-600 text-sm m-0 flex-1">{message}</p>
       {onDismiss && (
-        <button style={closeButtonStyles} onClick={onDismiss}>
+        <button
+          onClick={onDismiss}
+          className="bg-transparent border-none text-red-600 text-xl cursor-pointer p-0 w-6 h-6 flex items-center justify-center hover:text-red-700"
+        >
           ×
         </button>
       )}

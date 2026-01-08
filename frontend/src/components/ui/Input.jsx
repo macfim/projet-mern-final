@@ -1,31 +1,12 @@
-import {
-  COLORS,
-  SPACING,
-  TYPOGRAPHY,
-  BORDERS,
-  TRANSITIONS,
-} from "../../constants/styles";
-
 export default function Input({
   type = "text",
   value,
   onChange,
   required = false,
   placeholder,
+  className = "",
   ...props
 }) {
-  const styles = {
-    width: "100%",
-    padding: `${SPACING.md} ${SPACING.lg}`,
-    fontSize: TYPOGRAPHY.fontSizeMd,
-    border: `${BORDERS.width} solid ${COLORS.border}`,
-    borderRadius: BORDERS.radius,
-    backgroundColor: COLORS.background,
-    color: COLORS.text,
-    transition: TRANSITIONS.default,
-    boxSizing: "border-box",
-  };
-
   return (
     <input
       type={type}
@@ -33,7 +14,7 @@ export default function Input({
       onChange={onChange}
       required={required}
       placeholder={placeholder}
-      style={styles}
+      className={`w-full px-3 py-2 text-sm border border-slate-300 rounded bg-white text-slate-900 transition-all focus:outline-none focus:ring-2 focus:ring-slate-900 ${className}`}
       {...props}
     />
   );

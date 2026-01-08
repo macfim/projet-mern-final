@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { api } from "../api.js";
 import Pagination from "../components/ui/Pagination";
+import Input from "../components/ui/Input";
+import Button from "../components/ui/Button";
+import Card from "../components/ui/Card";
+import ErrorMessage from "../components/ui/ErrorMessage";
 
 export function TagsPage() {
   const [tags, setTags] = useState([]);
@@ -27,7 +31,6 @@ export function TagsPage() {
     loadTags();
   }, []);
 
-  // Validate current page when tags.length changes
   useEffect(() => {
     const totalPages = Math.ceil(tags.length / PAGE_SIZE);
     if (currentPage > totalPages && totalPages > 0) {
@@ -100,105 +103,45 @@ export function TagsPage() {
     setCurrentPage(newPage);
   }
 
-  // Calculate paginated tags
   const startIndex = (currentPage - 1) * PAGE_SIZE;
   const endIndex = startIndex + PAGE_SIZE;
   const paginatedTags = tags.slice(startIndex, endIndex);
 
   return (
-    <div
-      style={{
-        padding: "20px",
-        maxWidth: "1200px",
-        margin: "0 auto",
-        display: "grid",
-        gridTemplateColumns: "2fr 1.5fr",
-        gap: "32px",
-      }}
-    >
-      <div>
-        <div
-          style={{
-            marginBottom: "16px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <h2
-            style={{
-              fontSize: "24px",
-              fontWeight: "bold",
-              color: "#0f172a",
-              margin: 0,
-            }}
-          >
-            Tags
-          </h2>
-          <span style={{ fontSize: "12px", color: "#64748b" }}>
+    <div className="p-5 max-w-6xl mx-auto grid grid-cols-3 gap-8">
+      <div className="col-span-2">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-slate-900">Tags</h2>
+          <span className="text-xs text-slate-500">
             {tags.length} tag{tags.length === 1 ? "" : "s"}
           </span>
         </div>
         {error && (
-          <p
-            style={{
-              marginBottom: "12px",
-              fontSize: "14px",
-              color: "#dc2626",
-            }}
-          >
-            {error}
-          </p>
+          <ErrorMessage
+            message={error}
+            onDismiss={() => setError("")}
+            className="mb-4"
+          />
         )}
-        <ul
-          style={{
-            listStyle: "none",
-            padding: 0,
-            margin: 0,
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "10px",
-          }}
-        >
+        <ul className="list-none p-0 m-0 flex flex-wrap gap-2.5">
           {paginatedTags.map((t) => (
             <li key={t._id}>
               <button
                 type="button"
                 onClick={() => viewTag(t._id)}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  borderRadius: "9999px",
-                  border:
-                    selectedTag && selectedTag._id === t._id
-                      ? "1px solid #0f172a"
-                      : "1px solid #e2e8f0",
-                  padding: "4px 12px",
-                  fontSize: "12px",
-                  fontWeight: "500",
-                  backgroundColor:
-                    selectedTag && selectedTag._id === t._id
-                      ? "#0f172a"
-                      : "#f1f5f9",
-                  color:
-                    selectedTag && selectedTag._id === t._id
-                      ? "white"
-                      : "#1e293b",
-                  cursor: "pointer",
-                }}
+                className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium transition-all ${
+                  selectedTag && selectedTag._id === t._id
+                    ? "border border-slate-900 bg-slate-900 text-white"
+                    : "border border-slate-200 bg-slate-100 text-slate-800"
+                }`}
               >
                 <span>{t.name}</span>
                 <span
-                  style={{
-                    fontSize: "10px",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.05em",
-                    color:
-                      selectedTag && selectedTag._id === t._id
-                        ? "rgba(255,255,255,0.7)"
-                        : "#94a3b8",
-                  }}
+                  className={`text-xs uppercase tracking-wider ${
+                    selectedTag && selectedTag._id === t._id
+                      ? "text-white/70"
+                      : "text-slate-400"
+                  }`}
                 >
                   {t.slug}
                 </span>
@@ -209,18 +152,15 @@ export function TagsPage() {
                       deleteTag(t._id);
                     }
                   }}
-                  style={{
-                    cursor: loadingDelete === t._id ? "wait" : "pointer",
-                    borderRadius: "9999px",
-                    backgroundColor: "rgba(0,0,0,0.1)",
-                    padding: "2px 6px",
-                    fontSize: "10px",
-                    color:
-                      selectedTag && selectedTag._id === t._id
-                        ? "rgba(255,255,255,0.9)"
-                        : "#64748b",
-                    opacity: loadingDelete === t._id ? 0.5 : 1,
-                  }}
+                  className={`rounded-full bg-black/10 px-1.5 py-0.5 text-xs ${
+                    selectedTag && selectedTag._id === t._id
+                      ? "text-white/90"
+                      : "text-slate-500"
+                  } ${
+                    loadingDelete === t._id
+                      ? "cursor-wait opacity-50"
+                      : "cursor-pointer"
+                  }`}
                 >
                   {loadingDelete === t._id ? "..." : "✕"}
                 </span>
@@ -228,7 +168,7 @@ export function TagsPage() {
             </li>
           ))}
           {tags.length === 0 && (
-            <li style={{ fontSize: "12px", color: "#64748b" }}>No tags yet.</li>
+            <li className="text-xs text-slate-500">No tags yet.</li>
           )}
         </ul>
         <Pagination
@@ -239,141 +179,63 @@ export function TagsPage() {
         />
       </div>
 
-      <div
-        style={{
-          borderRadius: "12px",
-          border: "1px solid #e2e8f0",
-          backgroundColor: "#f8fafc",
-          padding: "16px",
-          fontSize: "14px",
-        }}
-      >
-        <h3
-          style={{
-            marginBottom: "12px",
-            fontSize: "14px",
-            fontWeight: "bold",
-            color: "#0f172a",
-          }}
-        >
-          {selectedTag ? "Edit tag" : "Create tag"}
-        </h3>
-        <form
-          onSubmit={selectedTag ? updateTag : createTag}
-          style={{ display: "flex", flexDirection: "column", gap: "12px" }}
-        >
-          <div>
-            <label
-              style={{
-                display: "block",
-                fontSize: "12px",
-                fontWeight: "500",
-                color: "#334155",
-                marginBottom: "4px",
-              }}
-            >
-              Name
-            </label>
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              style={{
-                width: "100%",
-                borderRadius: "6px",
-                border: "1px solid #cbd5e1",
-                padding: "8px 12px",
-                fontSize: "12px",
-                boxSizing: "border-box",
-              }}
-            />
-          </div>
-          <div>
-            <label
-              style={{
-                display: "block",
-                fontSize: "12px",
-                fontWeight: "500",
-                color: "#334155",
-                marginBottom: "4px",
-              }}
-            >
-              Slug
-            </label>
-            <input
-              value={slug}
-              onChange={(e) => setSlug(e.target.value)}
-              required
-              style={{
-                width: "100%",
-                borderRadius: "6px",
-                border: "1px solid #cbd5e1",
-                padding: "8px 12px",
-                fontSize: "12px",
-                boxSizing: "border-box",
-              }}
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={loadingSubmit}
-            style={{
-              borderRadius: "6px",
-              backgroundColor: "#0f172a",
-              color: "white",
-              padding: "8px 16px",
-              fontSize: "12px",
-              fontWeight: "500",
-              border: "none",
-              cursor: loadingSubmit ? "not-allowed" : "pointer",
-              opacity: loadingSubmit ? 0.7 : 1,
-              alignSelf: "flex-start",
-            }}
+      <div className="col-span-1">
+        <Card className="bg-slate-50">
+          <h3 className="mb-3 text-sm font-bold text-slate-900">
+            {selectedTag ? "Edit tag" : "Create tag"}
+          </h3>
+          <form
+            onSubmit={selectedTag ? updateTag : createTag}
+            className="flex flex-col gap-3"
           >
-            {loadingSubmit
-              ? selectedTag
-                ? "Updating..."
-                : "Creating..."
-              : selectedTag
-              ? "Update tag"
-              : "Create tag"}
-          </button>
-        </form>
+            <div>
+              <label className="mb-1 block text-xs font-medium text-slate-700">
+                Name
+              </label>
+              <Input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className="text-xs"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-medium text-slate-700">
+                Slug
+              </label>
+              <Input
+                value={slug}
+                onChange={(e) => setSlug(e.target.value)}
+                required
+                className="text-xs"
+              />
+            </div>
+            <Button
+              type="submit"
+              disabled={loadingSubmit}
+              className="self-start px-4 py-1.5 text-xs"
+            >
+              {loadingSubmit
+                ? selectedTag
+                  ? "Updating..."
+                  : "Creating..."
+                : selectedTag
+                ? "Update tag"
+                : "Create tag"}
+            </Button>
+          </form>
 
-        {selectedTag && (
-          <div
-            style={{
-              marginTop: "16px",
-              borderRadius: "6px",
-              border: "1px solid #e2e8f0",
-              backgroundColor: "white",
-              padding: "12px",
-              fontSize: "11px",
-              color: "#334155",
-            }}
-          >
-            <h4
-              style={{
-                marginBottom: "4px",
-                fontSize: "12px",
-                fontWeight: "bold",
-                color: "#0f172a",
-              }}
-            >
-              Selected tag raw data
-            </h4>
-            <pre
-              style={{
-                whiteSpace: "pre-wrap",
-                margin: 0,
-                fontFamily: "monospace",
-                fontSize: "11px",
-              }}
-            >
-              {JSON.stringify(selectedTag, null, 2)}
-            </pre>
-          </div>
-        )}
+          {selectedTag && (
+            <div className="mt-4 rounded border border-slate-200 bg-white p-3">
+              <h4 className="mb-1 text-xs font-bold text-slate-900">
+                Selected tag raw data
+              </h4>
+              <pre className="m-0 whitespace-pre-wrap font-mono text-xs text-slate-700">
+                {JSON.stringify(selectedTag, null, 2)}
+              </pre>
+            </div>
+          )}
+        </Card>
       </div>
     </div>
   );

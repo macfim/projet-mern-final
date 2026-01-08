@@ -1,15 +1,12 @@
-import { SPACING } from "../../constants/styles";
-
 export default function Container({
   children,
   maxWidth = "800px",
-  padding = SPACING.xxxl,
+  padding = "48px",
+  className = "",
 }) {
-  const containerStyles = {
-    maxWidth,
-    margin: "0 auto",
-    padding,
-  };
-
-  return <div style={containerStyles}>{children}</div>;
+  return (
+    <div style={{ maxWidth, margin: "0 auto", padding }} className={className}>
+      {children}
+    </div>
+  );
 }

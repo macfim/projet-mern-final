@@ -1,6 +1,11 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../api.js";
+import Input from "../components/ui/Input";
+import Textarea from "../components/ui/Textarea";
+import Button from "../components/ui/Button";
+import ErrorMessage from "../components/ui/ErrorMessage";
+import PageHeader from "../components/ui/PageHeader";
 
 export function NewPostPage() {
   const [title, setTitle] = useState("");
@@ -20,7 +25,6 @@ export function NewPostPage() {
       const data = await api.get("/tags");
       setAvailableTags(data);
     } catch (err) {
-      // Silently fail if tags can't be loaded
       console.error("Failed to load tags:", err);
     }
   }
@@ -69,188 +73,86 @@ export function NewPostPage() {
   }
 
   return (
-    <div style={{ maxWidth: "700px", margin: "0 auto", padding: "20px" }}>
-      <h2
-        style={{
-          marginBottom: "24px",
-          fontSize: "28px",
-          fontWeight: "bold",
-          color: "#0f172a",
-        }}
-      >
-        New Post
-      </h2>
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "flex", flexDirection: "column", gap: "16px" }}
-      >
+    <div className="max-w-2xl mx-auto px-4 py-8">
+      <PageHeader title="New Post" />
+      <form className="flex flex-col gap-6">
         <div>
-          <label
-            style={{
-              display: "block",
-              fontSize: "14px",
-              fontWeight: "500",
-              color: "#334155",
-              marginBottom: "4px",
-            }}
-          >
+          <label className="block text-sm font-medium text-slate-700 mb-2">
             Title
           </label>
-          <input
+          <Input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
-            style={{
-              width: "100%",
-              borderRadius: "6px",
-              border: "1px solid #cbd5e1",
-              padding: "10px 12px",
-              fontSize: "14px",
-              boxSizing: "border-box",
-            }}
+            placeholder="Enter post title"
           />
         </div>
         <div>
-          <label
-            style={{
-              display: "block",
-              fontSize: "14px",
-              fontWeight: "500",
-              color: "#334155",
-              marginBottom: "4px",
-            }}
-          >
+          <label className="block text-sm font-medium text-slate-700 mb-2">
             Content
           </label>
-          <textarea
+          <Textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
             required
             rows={6}
-            style={{
-              width: "100%",
-              borderRadius: "6px",
-              border: "1px solid #cbd5e1",
-              padding: "10px 12px",
-              fontSize: "14px",
-              boxSizing: "border-box",
-              fontFamily: "inherit",
-            }}
+            placeholder="Enter post content"
           />
         </div>
         <div>
-          <label
-            style={{
-              display: "block",
-              fontSize: "14px",
-              fontWeight: "500",
-              color: "#334155",
-              marginBottom: "8px",
-            }}
-          >
+          <label className="block text-sm font-medium text-slate-700 mb-3">
             Tags
           </label>
           {availableTags.length > 0 ? (
-            <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: "8px",
-              }}
-            >
+            <div className="flex flex-wrap gap-2">
               {availableTags.map((tag) => (
                 <label
                   key={tag._id}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    padding: "6px 12px",
-                    borderRadius: "20px",
-                    border: "1px solid",
-                    borderColor: selectedTagIds.includes(tag._id)
-                      ? "#0f172a"
-                      : "#cbd5e1",
-                    backgroundColor: selectedTagIds.includes(tag._id)
-                      ? "#0f172a"
-                      : "white",
-                    color: selectedTagIds.includes(tag._id)
-                      ? "white"
-                      : "#334155",
-                    fontSize: "13px",
-                    fontWeight: "500",
-                    cursor: "pointer",
-                    transition: "all 0.2s",
-                  }}
+                  className={`inline-flex items-center gap-2 px-3 py-2 rounded-full border cursor-pointer transition-all ${
+                    selectedTagIds.includes(tag._id)
+                      ? "bg-slate-900 text-white border-slate-900"
+                      : "bg-white text-slate-700 border-slate-300 hover:border-slate-400"
+                  }`}
                 >
                   <input
                     type="checkbox"
                     checked={selectedTagIds.includes(tag._id)}
                     onChange={() => toggleTag(tag._id)}
-                    style={{ display: "none" }}
+                    className="hidden"
                   />
-                  {tag.name}
+                  <span className="text-sm font-medium">{tag.name}</span>
                 </label>
               ))}
             </div>
           ) : (
-            <p
-              style={{
-                fontSize: "13px",
-                color: "#64748b",
-                fontStyle: "italic",
-              }}
-            >
+            <p className="text-sm text-slate-500 italic">
               No tags available. Admins can create tags.
             </p>
           )}
         </div>
-        <button
-          type="button"
-          onClick={handleGenerateAI}
-          disabled={loading}
-          style={{
-            borderRadius: "6px",
-            backgroundColor: "#8b5cf6",
-            color: "white",
-            padding: "10px 16px",
-            fontSize: "14px",
-            fontWeight: "500",
-            border: "none",
-            cursor: loading ? "not-allowed" : "pointer",
-            opacity: loading ? 0.7 : 1,
-          }}
-        >
-          {loading ? "Generating..." : "✨ Generate with AI"}
-        </button>
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            borderRadius: "6px",
-            backgroundColor: "#0f172a",
-            color: "white",
-            padding: "10px 16px",
-            fontSize: "14px",
-            fontWeight: "500",
-            border: "none",
-            cursor: loading ? "not-allowed" : "pointer",
-            opacity: loading ? 0.7 : 1,
-          }}
-        >
-          {loading ? "Creating..." : "Create"}
-        </button>
+        <div className="flex gap-3">
+          <Button
+            type="button"
+            onClick={handleGenerateAI}
+            disabled={loading}
+            variant="secondary"
+          >
+            {loading ? "Generating..." : "✨ Generate with AI"}
+          </Button>
+          <Button
+            type="submit"
+            disabled={loading}
+            variant="primary"
+            onClick={handleSubmit}
+          >
+            {loading ? "Creating..." : "Create"}
+          </Button>
+        </div>
       </form>
       {error && (
-        <p
-          style={{
-            marginTop: "16px",
-            fontSize: "14px",
-            color: "#dc2626",
-          }}
-        >
-          {error}
-        </p>
+        <div className="mt-6">
+          <ErrorMessage message={error} onDismiss={() => setError("")} />
+        </div>
       )}
     </div>
   );

@@ -7,7 +7,6 @@ import Loading from "../components/ui/Loading";
 import ErrorMessage from "../components/ui/ErrorMessage";
 import Link from "../components/ui/Link";
 import Pagination from "../components/ui/Pagination";
-import { SPACING, COLORS, TYPOGRAPHY, BORDERS } from "../constants/styles";
 
 const PAGE_SIZE = 10;
 
@@ -54,7 +53,7 @@ export function PostsListPage() {
   }, []);
 
   const filterActions = (
-    <div style={{ display: "flex", gap: SPACING.xxl }}>
+    <div className="flex gap-8">
       <Button variant="secondary" onClick={loadAll} disabled={loading}>
         All posts
       </Button>
@@ -71,30 +70,18 @@ export function PostsListPage() {
       {error && <ErrorMessage message={error} onDismiss={() => setError("")} />}
       {!loading && (
         <>
-          <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+          <ul className="list-none p-0 m-0">
             {(() => {
               const startIndex = (currentPage - 1) * PAGE_SIZE;
               const endIndex = startIndex + PAGE_SIZE;
               const paginatedPosts = posts.slice(startIndex, endIndex);
               return paginatedPosts.map((p) => (
-                <li
-                  key={p._id}
-                  style={{
-                    padding: `${SPACING.lg} 0`,
-                    borderBottom: `${BORDERS.width} solid ${COLORS.lightGray}`,
-                  }}
-                >
+                <li key={p._id} className="py-4 border-b border-slate-300">
                   <Link to={`/posts/${p._id}`} variant="primary">
                     {p.title}
                   </Link>
                   {p.author && (
-                    <span
-                      style={{
-                        fontSize: TYPOGRAPHY.fontSizeSm,
-                        color: COLORS.textLight,
-                        marginLeft: SPACING.md,
-                      }}
-                    >
+                    <span className="text-sm text-slate-600 ml-3">
                       by {p.author.username}
                     </span>
                   )}
@@ -102,15 +89,7 @@ export function PostsListPage() {
               ));
             })()}
             {posts.length === 0 && (
-              <li
-                style={{
-                  padding: SPACING.lg,
-                  fontSize: TYPOGRAPHY.fontSizeMd,
-                  color: COLORS.textLight,
-                }}
-              >
-                No posts yet.
-              </li>
+              <li className="p-4 text-base text-slate-600">No posts yet.</li>
             )}
           </ul>
           {posts.length > PAGE_SIZE && (

@@ -1,49 +1,43 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { COLORS, SPACING, TYPOGRAPHY } from "../constants/styles";
 import Badge from "./ui/Badge";
 import Button from "./ui/Button";
 
 function Navbar() {
   const { user, logout, isAuthenticated, isAdmin } = useAuth();
 
-  const navLinkStyle = {
-    color: COLORS.background,
-    textDecoration: "none",
-    fontWeight: TYPOGRAPHY.fontWeightMedium,
-  };
-
   return (
-    <nav
-      style={{
-        backgroundColor: COLORS.primary,
-        padding: `${SPACING.xxxl} ${SPACING.xxxxxl}`,
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
-      <div style={{ display: "flex", gap: SPACING.xxxl }}>
-        <Link to="/" style={navLinkStyle}>
+    <nav className="bg-slate-900 px-20 py-6 flex justify-between items-center">
+      <div className="flex gap-6">
+        <Link to="/" className="text-white font-medium no-underline">
           Home
         </Link>
-        <Link to="/posts" style={navLinkStyle}>
+        <Link to="/posts" className="text-white font-medium no-underline">
           Posts
         </Link>
-        <Link to="/analytics" style={navLinkStyle}>
+        <Link to="/analytics" className="text-white font-medium no-underline">
           Analytics
         </Link>
         {isAuthenticated && (
           <>
-            <Link to="/new-post" style={navLinkStyle}>
+            <Link
+              to="/new-post"
+              className="text-white font-medium no-underline"
+            >
               New Post
             </Link>
             {isAdmin && (
               <>
-                <Link to="/tags" style={navLinkStyle}>
+                <Link
+                  to="/tags"
+                  className="text-white font-medium no-underline"
+                >
                   Tags
                 </Link>
-                <Link to="/users" style={navLinkStyle}>
+                <Link
+                  to="/users"
+                  className="text-white font-medium no-underline"
+                >
                   Users
                 </Link>
               </>
@@ -52,17 +46,12 @@ function Navbar() {
         )}
       </div>
 
-      <div style={{ display: "flex", gap: SPACING.xxxl, alignItems: "center" }}>
+      <div className="flex gap-6 items-center">
         {isAuthenticated ? (
           <>
             <Link
               to="/profile"
-              style={{
-                ...navLinkStyle,
-                display: "flex",
-                alignItems: "center",
-                gap: SPACING.md,
-              }}
+              className="text-white font-medium no-underline flex items-center gap-3"
             >
               <span>Profile ({user?.username})</span>
               {isAdmin && <Badge variant="info">Admin</Badge>}
@@ -73,10 +62,13 @@ function Navbar() {
           </>
         ) : (
           <>
-            <Link to="/login" style={navLinkStyle}>
+            <Link to="/login" className="text-white font-medium no-underline">
               Login
             </Link>
-            <Link to="/register" style={navLinkStyle}>
+            <Link
+              to="/register"
+              className="text-white font-medium no-underline"
+            >
               Register
             </Link>
           </>

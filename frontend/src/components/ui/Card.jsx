@@ -1,16 +1,8 @@
-import { COLORS, SPACING, BORDERS, SHADOWS } from "../../constants/styles";
-
-export default function Card({ children, ...props }) {
-  const styles = {
-    backgroundColor: COLORS.background,
-    border: `${BORDERS.width} solid ${COLORS.border}`,
-    borderRadius: BORDERS.radiusLg,
-    padding: SPACING.xxxl,
-    boxShadow: SHADOWS.sm,
-  };
-
+export default function Card({ children, className = "" }) {
   return (
-    <div style={styles} {...props}>
+    <div
+      className={`bg-white border border-slate-300 rounded-lg p-6 shadow-sm ${className}`}
+    >
       {children}
     </div>
   );

@@ -1,5 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../api.js";
+import Container from "../components/ui/Container";
+import Button from "../components/ui/Button";
+import Input from "../components/ui/Input";
+import Textarea from "../components/ui/Textarea";
+import Card from "../components/ui/Card";
+import ErrorMessage from "../components/ui/ErrorMessage";
 
 export function ProfilePage() {
   const [profile, setProfile] = useState(null);
@@ -31,7 +37,6 @@ export function ProfilePage() {
 
   function handleCancelEdit() {
     setIsEditing(false);
-    // Reset to original values
     setBio(profile?.bio || "");
     setAvatarUrl(profile?.avatarUrl || "");
   }
@@ -53,214 +58,106 @@ export function ProfilePage() {
 
   if (!profile) {
     return (
-      <div style={{ padding: '20px', fontSize: '14px', color: '#475569' }}>
-        Loading profile...
-      </div>
+      <Container>
+        <p className="text-sm text-slate-600">Loading profile...</p>
+      </Container>
     );
   }
 
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
-      <h2 style={{ 
-        fontSize: '24px', 
-        fontWeight: 'bold',
-        color: '#0f172a',
-        marginBottom: '16px'
-      }}>
-        My Profile
-      </h2>
+    <Container maxWidth="600px">
+      <h2 className="text-2xl font-bold text-slate-900 mb-4">My Profile</h2>
       {error && (
-        <p style={{ 
-          fontSize: '14px', 
-          color: '#dc2626',
-          marginBottom: '16px'
-        }}>
-          {error}
-        </p>
+        <ErrorMessage
+          message={error}
+          onDismiss={() => setError("")}
+          className="mb-4"
+        />
       )}
-      <div style={{
-        borderRadius: '6px',
-        border: '1px solid #e2e8f0',
-        backgroundColor: '#f8fafc',
-        padding: '16px',
-        fontSize: '14px',
-        marginBottom: '16px'
-      }}>
-        <p style={{ color: '#1e293b', marginBottom: '8px' }}>
-          <span style={{ fontWeight: '500' }}>Username:</span>{" "}
+      <Card className="mb-4">
+        <p className="text-slate-800 mb-2">
+          <span className="font-medium">Username:</span>{" "}
           {profile.user && profile.user.username}
         </p>
-        <p style={{ color: '#1e293b', marginBottom: '8px' }}>
-          <span style={{ fontWeight: '500' }}>Email:</span>{" "}
+        <p className="text-slate-800 mb-2">
+          <span className="font-medium">Email:</span>{" "}
           {profile.user && profile.user.email}
         </p>
-        <p style={{ color: '#1e293b' }}>
-          <span style={{ fontWeight: '500' }}>Role:</span>{" "}
-          <span style={{
-            display: 'inline-block',
-            padding: '2px 8px',
-            borderRadius: '12px',
-            fontSize: '12px',
-            fontWeight: '500',
-            backgroundColor: profile.user && profile.user.role === 'admin' ? '#dbeafe' : '#f1f5f9',
-            color: profile.user && profile.user.role === 'admin' ? '#1e40af' : '#475569'
-          }}>
+        <p className="text-slate-800">
+          <span className="font-medium">Role:</span>{" "}
+          <span
+            className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
+              profile.user && profile.user.role === "admin"
+                ? "bg-blue-100 text-blue-700"
+                : "bg-slate-100 text-slate-600"
+            }`}
+          >
             {profile.user && profile.user.role}
           </span>
         </p>
-      </div>
+      </Card>
       {!isEditing ? (
         <div>
-          <div style={{
-            borderRadius: '6px',
-            border: '1px solid #e2e8f0',
-            backgroundColor: '#f8fafc',
-            padding: '16px',
-            marginBottom: '16px'
-          }}>
-            <div style={{ marginBottom: '16px' }}>
-              <p style={{ 
-                fontSize: '12px', 
-                fontWeight: '500',
-                color: '#334155',
-                marginBottom: '6px'
-              }}>
-                Bio
-              </p>
-              <p style={{ 
-                fontSize: '14px', 
-                color: '#1e293b',
-                lineHeight: '1.6',
-                whiteSpace: 'pre-wrap'
-              }}>
-                {profile.bio || <span style={{ fontStyle: 'italic', color: '#94a3b8' }}>No bio set</span>}
+          <Card className="mb-4">
+            <div className="mb-4">
+              <p className="text-xs font-medium text-slate-600 mb-1">Bio</p>
+              <p className="text-sm text-slate-800 leading-relaxed whitespace-pre-wrap">
+                {profile.bio || (
+                  <span className="italic text-slate-400">No bio set</span>
+                )}
               </p>
             </div>
             <div>
-              <p style={{ 
-                fontSize: '12px', 
-                fontWeight: '500',
-                color: '#334155',
-                marginBottom: '6px'
-              }}>
+              <p className="text-xs font-medium text-slate-600 mb-1">
                 Avatar URL
               </p>
-              <p style={{ 
-                fontSize: '14px', 
-                color: '#1e293b',
-                wordBreak: 'break-all'
-              }}>
-                {profile.avatarUrl || <span style={{ fontStyle: 'italic', color: '#94a3b8' }}>No avatar URL set</span>}
+              <p className="text-sm text-slate-800 break-all">
+                {profile.avatarUrl || (
+                  <span className="italic text-slate-400">
+                    No avatar URL set
+                  </span>
+                )}
               </p>
             </div>
-          </div>
-          <button
-            type="button"
-            onClick={handleEditClick}
-            style={{
-              borderRadius: '6px',
-              backgroundColor: '#0f172a',
-              color: 'white',
-              padding: '8px 16px',
-              fontSize: '12px',
-              fontWeight: '500',
-              border: 'none',
-              cursor: 'pointer'
-            }}
-          >
-            Edit Profile
-          </button>
+          </Card>
+          <Button onClick={handleEditClick}>Edit Profile</Button>
         </div>
       ) : (
-        <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <form onSubmit={handleSave} className="flex flex-col gap-4">
           <div>
-            <label style={{ 
-              display: 'block', 
-              fontSize: '12px', 
-              fontWeight: '500',
-              color: '#334155',
-              marginBottom: '4px'
-            }}>
+            <label className="block text-xs font-medium text-slate-600 mb-1">
               Bio
             </label>
-            <textarea
+            <Textarea
               value={bio}
               onChange={(e) => setBio(e.target.value)}
               rows={4}
-              style={{
-                width: '100%',
-                borderRadius: '6px',
-                border: '1px solid #cbd5e1',
-                padding: '8px 12px',
-                fontSize: '12px',
-                boxSizing: 'border-box',
-                fontFamily: 'inherit'
-              }}
             />
           </div>
           <div>
-            <label style={{ 
-              display: 'block', 
-              fontSize: '12px', 
-              fontWeight: '500',
-              color: '#334155',
-              marginBottom: '4px'
-            }}>
+            <label className="block text-xs font-medium text-slate-600 mb-1">
               Avatar URL
             </label>
-            <input
+            <Input
               value={avatarUrl}
               onChange={(e) => setAvatarUrl(e.target.value)}
-              style={{
-                width: '100%',
-                borderRadius: '6px',
-                border: '1px solid #cbd5e1',
-                padding: '8px 12px',
-                fontSize: '12px',
-                boxSizing: 'border-box'
-              }}
             />
           </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <button
-              type="submit"
-              disabled={loading}
-              style={{
-                borderRadius: '6px',
-                backgroundColor: '#0f172a',
-                color: 'white',
-                padding: '8px 16px',
-                fontSize: '12px',
-                fontWeight: '500',
-                border: 'none',
-                cursor: loading ? 'not-allowed' : 'pointer',
-                opacity: loading ? 0.7 : 1
-              }}
-            >
-              {loading ? 'Saving...' : 'Save'}
-            </button>
-            <button
+          <div className="flex gap-2">
+            <Button type="submit" disabled={loading}>
+              {loading ? "Saving..." : "Save"}
+            </Button>
+            <Button
               type="button"
+              variant="secondary"
               onClick={handleCancelEdit}
               disabled={loading}
-              style={{
-                borderRadius: '6px',
-                border: '1px solid #cbd5e1',
-                backgroundColor: 'white',
-                color: '#334155',
-                padding: '8px 16px',
-                fontSize: '12px',
-                fontWeight: '500',
-                cursor: loading ? 'not-allowed' : 'pointer',
-                opacity: loading ? 0.7 : 1
-              }}
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </form>
       )}
-    </div>
+    </Container>
   );
 }
-

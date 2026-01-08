@@ -1,6 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { api, getCurrentUser } from "../api.js";
+import Button from "../components/ui/Button";
+import Input from "../components/ui/Input";
+import Textarea from "../components/ui/Textarea";
+import Card from "../components/ui/Card";
+import ErrorMessage from "../components/ui/ErrorMessage";
 
 export function PostDetailPage() {
   const { id } = useParams();
@@ -174,359 +179,137 @@ export function PostDetailPage() {
   }
 
   if (!post) {
-    return (
-      <div style={{ padding: "20px", fontSize: "14px", color: "#475569" }}>
-        Loading post...
-      </div>
-    );
+    return <div className="p-5 text-sm text-slate-600">Loading post...</div>;
   }
 
   const isAuthor =
     currentUser && post.author && currentUser.id === post.author._id;
 
   return (
-    <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
-      <div style={{ marginBottom: "32px" }}>
-        <h2
-          style={{
-            marginBottom: "10px",
-            fontSize: "28px",
-            fontWeight: "bold",
-            color: "#0f172a",
-          }}
-        >
+    <div className="p-5 max-w-3xl mx-auto">
+      <div className="mb-8">
+        <h2 className="mb-2.5 text-2xl font-bold text-slate-900">
           {post.title}
         </h2>
-        <p
-          style={{
-            marginBottom: "10px",
-            fontSize: "14px",
-            color: "#334155",
-            lineHeight: "1.6",
-          }}
-        >
+        <p className="mb-2.5 text-sm text-slate-700 leading-relaxed">
           {post.content}
         </p>
         {post.author && (
-          <p style={{ fontSize: "12px", color: "#64748b" }}>
-            By {post.author.username}
-          </p>
+          <p className="text-xs text-slate-500">By {post.author.username}</p>
         )}
-        <p style={{ marginTop: "10px", fontSize: "12px", color: "#64748b" }}>
+        <p className="mt-2.5 text-xs text-slate-500">
           Tags: {(post.tags || []).map((t) => t.name).join(", ") || "No tags"}
         </p>
         {error && (
-          <p
-            style={{
-              marginTop: "15px",
-              fontSize: "14px",
-              color: "#dc2626",
-            }}
-          >
-            {error}
-          </p>
+          <div className="mt-4">
+            <ErrorMessage message={error} onDismiss={() => setError("")} />
+          </div>
         )}
       </div>
 
       {isAuthor && !isEditingPost && (
-        <div style={{ marginBottom: "32px", display: "flex", gap: "10px" }}>
-          <button
-            type="button"
-            onClick={handleEditPostClick}
-            style={{
-              borderRadius: "6px",
-              backgroundColor: "#0f172a",
-              color: "white",
-              padding: "8px 16px",
-              fontSize: "12px",
-              fontWeight: "500",
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            Edit Post
-          </button>
-          <button
-            type="button"
+        <div className="mb-8 flex gap-2.5">
+          <Button onClick={handleEditPostClick}>Edit Post</Button>
+          <Button
+            variant="danger"
             onClick={handleDeletePost}
             disabled={loadingDeletePost}
-            style={{
-              borderRadius: "6px",
-              border: "1px solid #fecaca",
-              backgroundColor: "#fef2f2",
-              color: "#991b1b",
-              padding: "8px 16px",
-              fontSize: "12px",
-              fontWeight: "500",
-              cursor: loadingDeletePost ? "not-allowed" : "pointer",
-              opacity: loadingDeletePost ? 0.7 : 1,
-            }}
           >
             {loadingDeletePost ? "Deleting..." : "Delete Post"}
-          </button>
+          </Button>
         </div>
       )}
 
       {isAuthor && isEditingPost && (
-        <div
-          style={{
-            borderRadius: "6px",
-            border: "1px solid #e2e8f0",
-            backgroundColor: "#f8fafc",
-            padding: "16px",
-            marginBottom: "32px",
-          }}
-        >
-          <h3
-            style={{
-              marginBottom: "12px",
-              fontSize: "14px",
-              fontWeight: "bold",
-              color: "#0f172a",
-            }}
-          >
-            Edit Post
-          </h3>
-          <div
-            style={{ display: "flex", flexDirection: "column", gap: "12px" }}
-          >
+        <Card className="mb-8">
+          <h3 className="mb-3 text-sm font-bold text-slate-900">Edit Post</h3>
+          <div className="flex flex-col gap-3">
             <div>
-              <label
-                style={{
-                  display: "block",
-                  fontSize: "12px",
-                  fontWeight: "500",
-                  color: "#334155",
-                  marginBottom: "4px",
-                }}
-              >
+              <label className="block text-xs font-medium text-slate-700 mb-1">
                 Title
               </label>
-              <input
+              <Input
                 value={editTitle}
                 onChange={(e) => setEditTitle(e.target.value)}
-                style={{
-                  width: "100%",
-                  borderRadius: "6px",
-                  border: "1px solid #cbd5e1",
-                  padding: "8px 12px",
-                  fontSize: "12px",
-                  boxSizing: "border-box",
-                }}
               />
             </div>
             <div>
-              <label
-                style={{
-                  display: "block",
-                  fontSize: "12px",
-                  fontWeight: "500",
-                  color: "#334155",
-                  marginBottom: "4px",
-                }}
-              >
+              <label className="block text-xs font-medium text-slate-700 mb-1">
                 Content
               </label>
-              <textarea
+              <Textarea
                 value={editContent}
                 onChange={(e) => setEditContent(e.target.value)}
                 rows={4}
-                style={{
-                  width: "100%",
-                  borderRadius: "6px",
-                  border: "1px solid #cbd5e1",
-                  padding: "8px 12px",
-                  fontSize: "12px",
-                  boxSizing: "border-box",
-                  fontFamily: "inherit",
-                }}
               />
             </div>
             <div>
-              <label
-                style={{
-                  display: "block",
-                  fontSize: "12px",
-                  fontWeight: "500",
-                  color: "#334155",
-                  marginBottom: "8px",
-                }}
-              >
+              <label className="block text-xs font-medium text-slate-700 mb-2">
                 Tags
               </label>
               {availableTags.length > 0 ? (
-                <div
-                  style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: "6px",
-                  }}
-                >
+                <div className="flex flex-wrap gap-1.5">
                   {availableTags.map((tag) => (
                     <label
                       key={tag._id}
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "4px",
-                        padding: "4px 10px",
-                        borderRadius: "16px",
-                        border: "1px solid",
-                        borderColor: selectedTagIds.includes(tag._id)
-                          ? "#0f172a"
-                          : "#cbd5e1",
-                        backgroundColor: selectedTagIds.includes(tag._id)
-                          ? "#0f172a"
-                          : "white",
-                        color: selectedTagIds.includes(tag._id)
-                          ? "white"
-                          : "#334155",
-                        fontSize: "11px",
-                        fontWeight: "500",
-                        cursor: "pointer",
-                        transition: "all 0.2s",
-                      }}
+                      className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full border text-xs font-medium cursor-pointer transition-all ${
+                        selectedTagIds.includes(tag._id)
+                          ? "bg-slate-900 text-white border-slate-900"
+                          : "bg-white text-slate-700 border-slate-300"
+                      }`}
                     >
                       <input
                         type="checkbox"
                         checked={selectedTagIds.includes(tag._id)}
                         onChange={() => toggleTag(tag._id)}
-                        style={{ display: "none" }}
+                        className="hidden"
                       />
                       {tag.name}
                     </label>
                   ))}
                 </div>
               ) : (
-                <p
-                  style={{
-                    fontSize: "11px",
-                    color: "#64748b",
-                    fontStyle: "italic",
-                  }}
-                >
+                <p className="text-xs text-slate-500 italic">
                   No tags available
                 </p>
               )}
             </div>
-            <div style={{ display: "flex", gap: "10px" }}>
-              <button
-                type="button"
-                onClick={handleUpdatePost}
-                disabled={loadingUpdatePost}
-                style={{
-                  borderRadius: "6px",
-                  backgroundColor: "#0f172a",
-                  color: "white",
-                  padding: "6px 12px",
-                  fontSize: "12px",
-                  fontWeight: "500",
-                  border: "none",
-                  cursor: loadingUpdatePost ? "not-allowed" : "pointer",
-                  opacity: loadingUpdatePost ? 0.7 : 1,
-                }}
-              >
+            <div className="flex gap-2.5">
+              <Button onClick={handleUpdatePost} disabled={loadingUpdatePost}>
                 {loadingUpdatePost ? "Saving..." : "Save"}
-              </button>
-              <button
-                type="button"
-                onClick={handleCancelEditPost}
-                style={{
-                  borderRadius: "6px",
-                  border: "1px solid #cbd5e1",
-                  backgroundColor: "white",
-                  color: "#334155",
-                  padding: "6px 12px",
-                  fontSize: "12px",
-                  fontWeight: "500",
-                  cursor: "pointer",
-                }}
-              >
+              </Button>
+              <Button variant="secondary" onClick={handleCancelEditPost}>
                 Cancel
-              </button>
+              </Button>
             </div>
           </div>
-        </div>
+        </Card>
       )}
 
       <div>
-        <h3
-          style={{
-            marginBottom: "12px",
-            fontSize: "14px",
-            fontWeight: "bold",
-            color: "#0f172a",
-          }}
-        >
-          Comments
-        </h3>
+        <h3 className="mb-3 text-sm font-bold text-slate-900">Comments</h3>
         {currentUser ? (
-          <form
-            onSubmit={handleAddComment}
-            style={{
-              marginBottom: "16px",
-              display: "flex",
-              gap: "10px",
-              fontSize: "14px",
-            }}
-          >
-            <input
+          <form onSubmit={handleAddComment} className="mb-4 flex gap-2.5">
+            <Input
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               placeholder="Write a comment"
-              style={{
-                flex: 1,
-                borderRadius: "6px",
-                border: "1px solid #cbd5e1",
-                padding: "8px 12px",
-                fontSize: "12px",
-                boxSizing: "border-box",
-              }}
+              className="flex-1"
             />
-            <button
-              type="submit"
-              disabled={loadingAddComment}
-              style={{
-                borderRadius: "6px",
-                backgroundColor: "#0f172a",
-                color: "white",
-                padding: "8px 16px",
-                fontSize: "12px",
-                fontWeight: "500",
-                border: "none",
-                cursor: loadingAddComment ? "not-allowed" : "pointer",
-                opacity: loadingAddComment ? 0.7 : 1,
-              }}
-            >
+            <Button type="submit" disabled={loadingAddComment}>
               {loadingAddComment ? "Adding..." : "Add"}
-            </button>
+            </Button>
           </form>
         ) : (
-          <p
-            style={{
-              marginBottom: "16px",
-              fontSize: "13px",
-              color: "#64748b",
-              fontStyle: "italic",
-            }}
-          >
+          <p className="mb-4 text-xs text-slate-500 italic">
             Please{" "}
-            <a href="/login" style={{ color: "#0f172a", fontWeight: "500" }}>
+            <a href="/login" className="text-slate-900 font-medium">
               log in
             </a>{" "}
             to add a comment.
           </p>
         )}
-        <ul
-          style={{
-            listStyle: "none",
-            padding: 0,
-            margin: 0,
-            display: "flex",
-            flexDirection: "column",
-            gap: "12px",
-          }}
-        >
+        <ul className="list-none p-0 m-0 flex flex-col gap-3">
           {comments.map((c) => {
             const canEdit =
               currentUser && c.author && currentUser.id === c.author._id;
@@ -534,85 +317,49 @@ export function PostDetailPage() {
             return (
               <li
                 key={c._id}
-                style={{
-                  borderRadius: "6px",
-                  border: "1px solid #e2e8f0",
-                  backgroundColor: "#f8fafc",
-                  padding: "12px",
-                }}
+                className="rounded-lg border border-slate-300 bg-slate-50 p-3"
               >
                 {!isEditingThisComment ? (
                   <>
                     <p
-                      style={{
-                        fontSize: "14px",
-                        color: "#1e293b",
-                        marginBottom: canEdit ? "8px" : 0,
-                      }}
+                      className={`text-sm text-slate-900 ${
+                        canEdit ? "mb-2" : ""
+                      }`}
                     >
                       {c.content}{" "}
                       {c.author && (
-                        <span style={{ fontSize: "12px", color: "#64748b" }}>
+                        <span className="text-xs text-slate-500">
                           — {c.author.username}
                         </span>
                       )}
                     </p>
                     {canEdit && (
-                      <div
-                        style={{
-                          marginTop: "8px",
-                          display: "flex",
-                          gap: "10px",
-                        }}
-                      >
-                        <button
-                          type="button"
+                      <div className="mt-2 flex gap-2.5">
+                        <Button
+                          variant="primary"
                           onClick={() =>
                             handleEditCommentClick(c._id, c.content)
                           }
-                          style={{
-                            borderRadius: "6px",
-                            backgroundColor: "#0f172a",
-                            color: "white",
-                            padding: "4px 10px",
-                            fontSize: "11px",
-                            fontWeight: "500",
-                            border: "none",
-                            cursor: "pointer",
-                          }}
+                          className="px-2.5 py-1 text-xs"
                         >
                           Edit
-                        </button>
-                        <button
-                          type="button"
+                        </Button>
+                        <Button
+                          variant="danger"
                           onClick={() => handleDeleteComment(c._id)}
                           disabled={loadingDeleteComment === c._id}
-                          style={{
-                            borderRadius: "6px",
-                            border: "1px solid #fecaca",
-                            backgroundColor: "#fef2f2",
-                            color: "#991b1b",
-                            padding: "4px 10px",
-                            fontSize: "11px",
-                            fontWeight: "500",
-                            cursor: loadingDeleteComment === c._id ? "not-allowed" : "pointer",
-                            opacity: loadingDeleteComment === c._id ? 0.7 : 1,
-                          }}
+                          className="px-2.5 py-1 text-xs"
                         >
-                          {loadingDeleteComment === c._id ? "Deleting..." : "Delete"}
-                        </button>
+                          {loadingDeleteComment === c._id
+                            ? "Deleting..."
+                            : "Delete"}
+                        </Button>
                       </div>
                     )}
                   </>
                 ) : (
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "8px",
-                    }}
-                  >
-                    <input
+                  <div className="flex flex-col gap-2">
+                    <Input
                       value={editCommentTexts[c._id] || ""}
                       onChange={(e) =>
                         setEditCommentTexts((prev) => ({
@@ -621,52 +368,23 @@ export function PostDetailPage() {
                         }))
                       }
                       placeholder="Edit comment"
-                      style={{
-                        width: "100%",
-                        borderRadius: "6px",
-                        border: "1px solid #cbd5e1",
-                        padding: "6px 12px",
-                        fontSize: "12px",
-                        boxSizing: "border-box",
-                      }}
                     />
-                    <div style={{ display: "flex", gap: "10px" }}>
-                      <button
-                        type="button"
+                    <div className="flex gap-2.5">
+                      <Button
                         onClick={() => handleUpdateComment(c._id)}
                         disabled={loadingUpdateComment === c._id}
-                        style={{
-                          borderRadius: "6px",
-                          backgroundColor: "#0f172a",
-                          color: "white",
-                          padding: "6px 12px",
-                          fontSize: "12px",
-                          fontWeight: "500",
-                          border: "none",
-                          cursor: loadingUpdateComment === c._id ? "not-allowed" : "pointer",
-                          opacity: loadingUpdateComment === c._id ? 0.7 : 1,
-                        }}
+                        className="px-3 py-1.5 text-xs"
                       >
                         {loadingUpdateComment === c._id ? "Saving..." : "Save"}
-                      </button>
-                      <button
-                        type="button"
+                      </Button>
+                      <Button
+                        variant="secondary"
                         onClick={handleCancelEditComment}
                         disabled={loadingUpdateComment === c._id}
-                        style={{
-                          borderRadius: "6px",
-                          border: "1px solid #cbd5e1",
-                          backgroundColor: "white",
-                          color: "#334155",
-                          padding: "6px 12px",
-                          fontSize: "12px",
-                          fontWeight: "500",
-                          cursor: loadingUpdateComment === c._id ? "not-allowed" : "pointer",
-                          opacity: loadingUpdateComment === c._id ? 0.7 : 1,
-                        }}
+                        className="px-3 py-1.5 text-xs"
                       >
                         Cancel
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 )}
@@ -674,9 +392,7 @@ export function PostDetailPage() {
             );
           })}
           {comments.length === 0 && (
-            <li style={{ fontSize: "12px", color: "#64748b" }}>
-              No comments yet.
-            </li>
+            <li className="text-xs text-slate-500">No comments yet.</li>
           )}
         </ul>
       </div>

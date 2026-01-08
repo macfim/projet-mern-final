@@ -1,35 +1,19 @@
-import { COLORS, SPACING, TYPOGRAPHY, BORDERS } from "../../constants/styles";
-
-export default function Badge({ children, variant = "primary" }) {
-  const getVariantStyles = () => {
-    switch (variant) {
-      case "secondary":
-        return {
-          backgroundColor: COLORS.lightGray,
-          color: COLORS.secondary,
-        };
-      case "info":
-        return {
-          backgroundColor: COLORS.blueBg,
-          color: COLORS.blue,
-        };
-      case "primary":
-      default:
-        return {
-          backgroundColor: COLORS.primary,
-          color: COLORS.background,
-        };
-    }
+export default function Badge({
+  children,
+  variant = "primary",
+  className = "",
+}) {
+  const variants = {
+    primary: "bg-slate-900 text-white",
+    secondary: "bg-slate-100 text-slate-700",
+    info: "bg-blue-100 text-blue-700",
   };
 
-  const badgeStyles = {
-    display: "inline-block",
-    padding: `${SPACING.xs} ${SPACING.lg}`,
-    fontSize: TYPOGRAPHY.fontSizeXs,
-    fontWeight: TYPOGRAPHY.fontWeightMedium,
-    borderRadius: BORDERS.radiusRound,
-    ...getVariantStyles(),
-  };
-
-  return <span style={badgeStyles}>{children}</span>;
+  return (
+    <span
+      className={`inline-block px-4 py-1 text-xs font-medium rounded-full ${variants[variant]} ${className}`}
+    >
+      {children}
+    </span>
+  );
 }

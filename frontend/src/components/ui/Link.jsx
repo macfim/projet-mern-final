@@ -1,37 +1,26 @@
 import { Link as RouterLink } from "react-router-dom";
-import { COLORS, TYPOGRAPHY, TRANSITIONS } from "../../constants/styles";
 
-export default function Link({ to, children, variant = "primary", ...props }) {
-  const getVariantStyles = () => {
-    switch (variant) {
-      case "secondary":
-        return {
-          color: COLORS.secondary,
-          textDecoration: "none",
-        };
-      case "nav":
-        return {
-          color: COLORS.textLight,
-          textDecoration: "none",
-          fontWeight: TYPOGRAPHY.fontWeightMedium,
-        };
-      case "primary":
-      default:
-        return {
-          color: COLORS.primary,
-          textDecoration: "none",
-          fontWeight: TYPOGRAPHY.fontWeightMedium,
-        };
-    }
-  };
-
-  const linkStyles = {
-    transition: TRANSITIONS.default,
-    ...getVariantStyles(),
+export default function Link({
+  to,
+  children,
+  variant = "primary",
+  className = "",
+  ...props
+}) {
+  const variants = {
+    primary:
+      "text-slate-900 font-medium hover:text-slate-700 transition-colors",
+    secondary:
+      "text-slate-600 font-medium hover:text-slate-800 transition-colors",
+    nav: "text-slate-400 font-medium hover:text-slate-200 transition-colors",
   };
 
   return (
-    <RouterLink to={to} style={linkStyles} {...props}>
+    <RouterLink
+      to={to}
+      className={`no-underline ${variants[variant]} ${className}`}
+      {...props}
+    >
       {children}
     </RouterLink>
   );

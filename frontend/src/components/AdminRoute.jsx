@@ -1,19 +1,12 @@
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 function AdminRoute({ children }) {
   const { isAuthenticated, isAdmin, loading } = useAuth();
 
   if (loading) {
     return (
-      <div style={{ 
-        padding: '20px', 
-        textAlign: 'center',
-        fontSize: '16px',
-        color: '#475569'
-      }}>
-        Loading...
-      </div>
+      <div className="p-5 text-center text-sm text-slate-600">Loading...</div>
     );
   }
 
@@ -23,39 +16,16 @@ function AdminRoute({ children }) {
 
   if (!isAdmin) {
     return (
-      <div style={{ 
-        padding: '40px 20px', 
-        textAlign: 'center',
-        maxWidth: '600px',
-        margin: '0 auto'
-      }}>
-        <h2 style={{ 
-          fontSize: '24px', 
-          fontWeight: 'bold',
-          marginBottom: '12px',
-          color: '#0f172a'
-        }}>
+      <div className="py-10 px-5 text-center max-w-2xl mx-auto">
+        <h2 className="text-2xl font-bold mb-3 text-slate-900">
           Access Denied
         </h2>
-        <p style={{ 
-          fontSize: '16px', 
-          color: '#64748b',
-          marginBottom: '24px'
-        }}>
+        <p className="text-sm text-slate-500 mb-6">
           This page is reserved for administrators only.
         </p>
-        <a 
+        <a
           href="/"
-          style={{
-            padding: '10px 20px',
-            backgroundColor: '#0f172a',
-            color: 'white',
-            textDecoration: 'none',
-            borderRadius: '6px',
-            fontSize: '14px',
-            fontWeight: '500',
-            display: 'inline-block'
-          }}
+          className="inline-block px-5 py-2 bg-slate-900 text-white no-underline rounded text-sm font-medium hover:bg-slate-800"
         >
           Return to Home
         </a>
@@ -67,4 +37,3 @@ function AdminRoute({ children }) {
 }
 
 export default AdminRoute;
-

@@ -1,16 +1,14 @@
 import Button from "./Button";
-import { COLORS, SPACING, TYPOGRAPHY } from "../../constants/styles";
 
 export default function Pagination({
   totalItems,
   currentPage,
   pageSize,
   onPageChange,
+  className = "",
 }) {
-  // Calculate total pages
   const totalPages = Math.ceil(totalItems / pageSize);
 
-  // Return null if pagination not needed
   if (totalPages <= 1) {
     return null;
   }
@@ -27,25 +25,10 @@ export default function Pagination({
     }
   };
 
-  const containerStyles = {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: SPACING.xxl,
-    marginTop: SPACING.xxxl,
-    padding: `${SPACING.xxl} 0`,
-  };
-
-  const pageInfoStyles = {
-    fontSize: TYPOGRAPHY.fontSizeMd,
-    color: COLORS.text,
-    fontWeight: TYPOGRAPHY.fontWeightMedium,
-    minWidth: "100px",
-    textAlign: "center",
-  };
-
   return (
-    <div style={containerStyles}>
+    <div
+      className={`flex items-center justify-center gap-6 mt-12 py-6 ${className}`}
+    >
       <Button
         variant="secondary"
         onClick={handlePrevious}
@@ -54,7 +37,7 @@ export default function Pagination({
         Previous
       </Button>
 
-      <div style={pageInfoStyles}>
+      <div className="text-sm text-slate-900 font-medium min-w-[100px] text-center">
         Page {currentPage} of {totalPages}
       </div>
 

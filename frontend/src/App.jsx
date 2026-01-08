@@ -1,23 +1,23 @@
-import { Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import ProtectedRoute from './components/ProtectedRoute';
-import AdminRoute from './components/AdminRoute';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import { PostsListPage } from './pages/PostsListPage';
-import { PostDetailPage } from './pages/PostDetailPage';
-import { NewPostPage } from './pages/NewPostPage';
-import { ProfilePage } from './pages/ProfilePage';
-import { UsersPage } from './pages/UsersPage';
-import { TagsPage } from './pages/TagsPage';
-import PowerBIPage from './pages/PowerBIPage';
+import { Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import ProtectedRoute from "./components/ProtectedRoute";
+import AdminRoute from "./components/AdminRoute";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import { PostsListPage } from "./pages/PostsListPage";
+import { PostDetailPage } from "./pages/PostDetailPage";
+import { NewPostPage } from "./pages/NewPostPage";
+import { ProfilePage } from "./pages/ProfilePage";
+import { UsersPage } from "./pages/UsersPage";
+import { TagsPage } from "./pages/TagsPage";
+import PowerBIPage from "./pages/PowerBIPage";
 
 function App() {
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main style={{ flex: 1 }}>
+      <main className="flex-1">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />

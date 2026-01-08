@@ -1,19 +1,12 @@
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated, loading } = useAuth();
 
   if (loading) {
     return (
-      <div style={{ 
-        padding: '20px', 
-        textAlign: 'center',
-        fontSize: '16px',
-        color: '#475569'
-      }}>
-        Loading...
-      </div>
+      <div className="p-5 text-center text-sm text-slate-600">Loading...</div>
     );
   }
 
@@ -25,4 +18,3 @@ function ProtectedRoute({ children }) {
 }
 
 export default ProtectedRoute;
-

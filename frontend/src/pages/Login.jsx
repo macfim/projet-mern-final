@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import Card from "../components/ui/Card";
+import Input from "../components/ui/Input";
+import Button from "../components/ui/Button";
+import ErrorMessage from "../components/ui/ErrorMessage";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -26,146 +30,54 @@ function Login() {
   };
 
   return (
-    <div
-      style={{
-        maxWidth: "440px",
-        margin: "60px auto",
-        padding: "32px",
-        backgroundColor: "white",
-        borderRadius: "8px",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-        border: "1px solid #e2e8f0",
-      }}
-    >
-      <h2
-        style={{
-          marginBottom: "24px",
-          fontSize: "28px",
-          fontWeight: "bold",
-          color: "#0f172a",
-          textAlign: "center",
-        }}
-      >
-        Login
-      </h2>
+    <div className="max-w-md mx-auto mt-16 mb-16">
+      <Card>
+        <h2 className="mb-6 text-2xl font-bold text-slate-900 text-center">
+          Login
+        </h2>
 
-      {error && (
-        <div
-          style={{
-            padding: "12px",
-            marginBottom: "16px",
-            backgroundColor: "#fef2f2",
-            color: "#991b1b",
-            borderRadius: "6px",
-            border: "1px solid #fecaca",
-            fontSize: "14px",
-          }}
-        >
-          {error}
-        </div>
-      )}
+        {error && <ErrorMessage>{error}</ErrorMessage>}
 
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "flex", flexDirection: "column", gap: "16px" }}
-      >
-        <div>
-          <label
-            style={{
-              display: "block",
-              marginBottom: "4px",
-              fontSize: "14px",
-              fontWeight: "500",
-              color: "#334155",
-            }}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div>
+            <label className="block mb-1 text-sm font-medium text-slate-700">
+              Email
+            </label>
+            <Input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 text-sm font-medium text-slate-700">
+              Password
+            </label>
+            <Input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <Button type="submit" disabled={loading} className="w-full mt-2">
+            {loading ? "Logging in..." : "Login"}
+          </Button>
+        </form>
+
+        <p className="mt-5 text-center text-sm text-slate-600">
+          Don't have an account?{" "}
+          <Link
+            to="/register"
+            className="text-slate-900 font-medium hover:underline"
           >
-            Email
-          </label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            style={{
-              width: "100%",
-              padding: "10px 12px",
-              border: "1px solid #cbd5e1",
-              borderRadius: "6px",
-              fontSize: "14px",
-              boxSizing: "border-box",
-            }}
-          />
-        </div>
-
-        <div>
-          <label
-            style={{
-              display: "block",
-              marginBottom: "4px",
-              fontSize: "14px",
-              fontWeight: "500",
-              color: "#334155",
-            }}
-          >
-            Password
-          </label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            style={{
-              width: "100%",
-              padding: "10px 12px",
-              border: "1px solid #cbd5e1",
-              borderRadius: "6px",
-              fontSize: "14px",
-              boxSizing: "border-box",
-            }}
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            width: "100%",
-            padding: "12px",
-            backgroundColor: "#0f172a",
-            color: "white",
-            border: "none",
-            borderRadius: "6px",
-            cursor: loading ? "not-allowed" : "pointer",
-            fontSize: "14px",
-            fontWeight: "500",
-            marginTop: "8px",
-            opacity: loading ? 0.7 : 1,
-          }}
-        >
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
-
-      <p
-        style={{
-          marginTop: "20px",
-          textAlign: "center",
-          fontSize: "14px",
-          color: "#64748b",
-        }}
-      >
-        Don't have an account?{" "}
-        <Link
-          to="/register"
-          style={{
-            color: "#0f172a",
-            textDecoration: "none",
-            fontWeight: "500",
-          }}
-        >
-          Register
-        </Link>
-      </p>
+            Register
+          </Link>
+        </p>
+      </Card>
     </div>
   );
 }

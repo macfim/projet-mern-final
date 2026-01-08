@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { api } from "../api.js";
+import Button from "../components/ui/Button.jsx";
+import Input from "../components/ui/Input.jsx";
+import ErrorMessage from "../components/ui/ErrorMessage.jsx";
+import Container from "../components/ui/Container.jsx";
+import Card from "../components/ui/Card.jsx";
 
 export function UsersPage() {
   const [users, setUsers] = useState([]);
@@ -73,204 +78,101 @@ export function UsersPage() {
   }
 
   return (
-    <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
-      <h2 style={{ 
-        fontSize: '24px', 
-        fontWeight: 'bold',
-        color: '#0f172a',
-        marginBottom: '16px'
-      }}>
-        Users
-      </h2>
+    <Container maxWidth="800px" padding="20px">
+      <h2 className="text-2xl font-bold text-slate-900 mb-4">Users</h2>
       {error && (
-        <p style={{ 
-          fontSize: '14px', 
-          color: '#dc2626',
-          marginBottom: '16px'
-        }}>
-          {error}
-        </p>
+        <ErrorMessage
+          message={error}
+          onDismiss={() => setError("")}
+          className="mb-4"
+        />
       )}
-      <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+      <ul className="list-none p-0 m-0">
         {users.map((u) => {
           const isEditingThisUser = editingUserId === u._id;
           return (
-            <li 
-              key={u._id} 
-              style={{ 
-                padding: '12px 0',
-                borderBottom: '1px solid #f1f5f9',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '10px'
-              }}
+            <li
+              key={u._id}
+              className="py-3 border-b border-slate-100 flex flex-col gap-2"
             >
               <div>
-                <p style={{ fontWeight: '500', color: '#0f172a', marginBottom: '4px' }}>
-                  {u.username}
-                </p>
-                <p style={{ fontSize: '12px', color: '#64748b' }}>
-                  {u.email}
-                </p>
+                <p className="font-medium text-slate-900 mb-1">{u.username}</p>
+                <p className="text-xs text-slate-500">{u.email}</p>
               </div>
               {!isEditingThisUser ? (
-                <div style={{ 
-                  display: 'flex', 
-                  flexWrap: 'wrap', 
-                  alignItems: 'center', 
-                  gap: '10px' 
-                }}>
-                  <button
-                    type="button"
+                <div className="flex flex-wrap items-center gap-2">
+                  <Button
+                    variant="secondary"
                     onClick={() => viewUser(u._id)}
-                    style={{
-                      borderRadius: '6px',
-                      border: '1px solid #cbd5e1',
-                      padding: '6px 12px',
-                      fontSize: '12px',
-                      fontWeight: '500',
-                      color: '#334155',
-                      backgroundColor: 'white',
-                      cursor: 'pointer'
-                    }}
+                    className="px-3 py-1 text-xs"
                   >
                     View
-                  </button>
-                  <button
-                    type="button"
+                  </Button>
+                  <Button
+                    variant="primary"
                     onClick={() => handleEditUserClick(u._id, u.username)}
-                    style={{
-                      borderRadius: '6px',
-                      backgroundColor: '#0f172a',
-                      color: 'white',
-                      padding: '6px 12px',
-                      fontSize: '12px',
-                      fontWeight: '500',
-                      border: 'none',
-                      cursor: 'pointer'
-                    }}
+                    className="px-3 py-1 text-xs"
                   >
                     Edit Username
-                  </button>
-                  <button
-                    type="button"
+                  </Button>
+                  <Button
+                    variant="danger"
                     onClick={() => deleteUser(u._id)}
                     disabled={loadingDelete === u._id}
-                    style={{
-                      borderRadius: '6px',
-                      border: '1px solid #fecaca',
-                      backgroundColor: '#fef2f2',
-                      color: '#991b1b',
-                      padding: '6px 12px',
-                      fontSize: '12px',
-                      fontWeight: '500',
-                      cursor: loadingDelete === u._id ? 'not-allowed' : 'pointer',
-                      opacity: loadingDelete === u._id ? 0.7 : 1
-                    }}
+                    className="px-3 py-1 text-xs"
                   >
-                    {loadingDelete === u._id ? 'Deleting...' : 'Delete'}
-                  </button>
+                    {loadingDelete === u._id ? "Deleting..." : "Delete"}
+                  </Button>
                 </div>
               ) : (
-                <div style={{ 
-                  display: 'flex', 
-                  flexWrap: 'wrap', 
-                  alignItems: 'center', 
-                  gap: '10px' 
-                }}>
-                  <input
+                <div className="flex flex-wrap items-center gap-2">
+                  <Input
                     placeholder="New username"
                     value={editNames[u._id] || ""}
                     onChange={(e) =>
-                      setEditNames((prev) => ({ ...prev, [u._id]: e.target.value }))
+                      setEditNames((prev) => ({
+                        ...prev,
+                        [u._id]: e.target.value,
+                      }))
                     }
-                    style={{
-                      flex: '1',
-                      minWidth: '150px',
-                      borderRadius: '6px',
-                      border: '1px solid #cbd5e1',
-                      padding: '6px 8px',
-                      fontSize: '12px',
-                      boxSizing: 'border-box'
-                    }}
+                    className="flex-1 min-w-[150px] text-xs"
                   />
-                  <button
-                    type="button"
+                  <Button
+                    variant="primary"
                     onClick={() => saveName(u._id)}
                     disabled={loadingSave === u._id}
-                    style={{
-                      borderRadius: '6px',
-                      backgroundColor: '#0f172a',
-                      color: 'white',
-                      padding: '6px 12px',
-                      fontSize: '12px',
-                      fontWeight: '500',
-                      border: 'none',
-                      cursor: loadingSave === u._id ? 'not-allowed' : 'pointer',
-                      opacity: loadingSave === u._id ? 0.7 : 1
-                    }}
+                    className="px-3 py-1 text-xs"
                   >
-                    {loadingSave === u._id ? 'Saving...' : 'Save'}
-                  </button>
-                  <button
-                    type="button"
+                    {loadingSave === u._id ? "Saving..." : "Save"}
+                  </Button>
+                  <Button
+                    variant="secondary"
                     onClick={handleCancelEditUser}
                     disabled={loadingSave === u._id}
-                    style={{
-                      borderRadius: '6px',
-                      border: '1px solid #cbd5e1',
-                      backgroundColor: 'white',
-                      color: '#334155',
-                      padding: '6px 12px',
-                      fontSize: '12px',
-                      fontWeight: '500',
-                      cursor: loadingSave === u._id ? 'not-allowed' : 'pointer',
-                      opacity: loadingSave === u._id ? 0.7 : 1
-                    }}
+                    className="px-3 py-1 text-xs"
                   >
                     Cancel
-                  </button>
+                  </Button>
                 </div>
               )}
             </li>
           );
         })}
         {users.length === 0 && (
-          <li style={{ padding: '12px 0', fontSize: '12px', color: '#64748b' }}>
-            No users found.
-          </li>
+          <li className="py-3 text-xs text-slate-500">No users found.</li>
         )}
       </ul>
 
       {selectedUser && (
-        <div style={{
-          marginTop: '20px',
-          borderRadius: '6px',
-          border: '1px solid #e2e8f0',
-          backgroundColor: '#f8fafc',
-          padding: '16px',
-          fontSize: '12px'
-        }}>
-          <h3 style={{ 
-            marginBottom: '8px', 
-            fontSize: '14px', 
-            fontWeight: 'bold',
-            color: '#0f172a'
-          }}>
+        <Card className="mt-5">
+          <h3 className="mb-2 text-sm font-bold text-slate-900">
             Selected user
           </h3>
-          <pre style={{ 
-            whiteSpace: 'pre-wrap', 
-            color: '#334155',
-            margin: 0,
-            fontFamily: 'monospace',
-            fontSize: '11px'
-          }}>
+          <pre className="whitespace-pre-wrap text-slate-600 m-0 font-mono text-xs">
             {JSON.stringify(selectedUser, null, 2)}
           </pre>
-        </div>
+        </Card>
       )}
-    </div>
+    </Container>
   );
 }
-
