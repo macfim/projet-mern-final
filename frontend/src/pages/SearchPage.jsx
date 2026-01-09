@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { api } from "../api";
+import { useAuth } from "../context/AuthContext";
 import Container from "../components/ui/Container";
 import PageHeader from "../components/ui/PageHeader";
 import Button from "../components/ui/Button";
@@ -12,21 +13,49 @@ import Badge from "../components/ui/Badge";
 
 export function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { isAdmin } = useAuth();
+
+  const allowedTypes = useMemo(
+    () =>
+      isAdmin
+        ? ["all", "posts", "users", "tags", "comments"]
+        : ["all", "posts", "users", "comments"],
+    [isAdmin]
+  );
+
+  const initialType = (() => {
+    const paramType = searchParams.get("type") || "all";
+    return allowedTypes.includes(paramType) ? paramType : "all";
+  })();
+
   const [query, setQuery] = useState(searchParams.get("q") || "");
-  const [type, setType] = useState(searchParams.get("type") || "all");
+  const [type, setType] = useState(initialType);
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const q = searchParams.get("q");
-    const t = searchParams.get("type") || "all";
-    if (q) {
-      setQuery(q);
-      setType(t);
-      performSearch(q, t);
+    const q = searchParams.get("q") || "";
+    const paramType = searchParams.get("type") || "all";
+    const nextType = allowedTypes.includes(paramType) ? paramType : "all";
+
+    setQuery(q);
+    setType(nextType);
+
+    if (paramType !== nextType) {
+      const newParams = {};
+      if (q) newParams.q = q;
+      newParams.type = nextType;
+      setSearchParams(newParams);
+      return;
     }
-  }, [searchParams]);
+
+    if (q) {
+      performSearch(q, nextType);
+    } else {
+      setResults(null);
+    }
+  }, [searchParams, allowedTypes]);
 
   const performSearch = async (searchQuery, searchType) => {
     if (!searchQuery.trim()) return;
@@ -48,13 +77,14 @@ export function SearchPage() {
   const handleSearch = (e) => {
     e.preventDefault();
     if (query.trim()) {
-      setSearchParams({ q: query, type });
+      const searchType = allowedTypes.includes(type) ? type : "all";
+      setSearchParams({ q: query, type: searchType });
     }
   };
 
   const typeButtons = (
     <div className="flex gap-2">
-      {["all", "posts", "users", "tags", "comments"].map((t) => (
+      {allowedTypes.map((t) => (
         <Button
           key={t}
           variant={type === t ? "primary" : "secondary"}
@@ -76,7 +106,11 @@ export function SearchPage() {
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search posts, users, tags, comments..."
+            placeholder={
+              isAdmin
+                ? "Search posts, users, tags, comments..."
+                : "Search posts, users, comments..."
+            }
             className="flex-1"
           />
           <Button type="submit" disabled={loading}>
@@ -160,7 +194,7 @@ export function SearchPage() {
             </div>
           )}
 
-          {results.tags.length > 0 && (
+          {isAdmin && results.tags.length > 0 && (
             <div className="mb-8">
               <h2 className="text-xl font-bold text-slate-900 mb-4">
                 Tags ({results.tags.length})
